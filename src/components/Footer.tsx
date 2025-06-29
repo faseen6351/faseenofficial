@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
     {
       icon: Mail,
       name: 'Email',
-      url: 'mailto:mohamed.fasin@example.com',
+      url: 'mailto:faseenofficial@gmail.com',
       color: 'hover:text-accent-400',
     },
   ];
@@ -127,10 +127,10 @@ const Footer: React.FC = () => {
               <h3 className="text-lg font-semibold text-white mb-4">Get in Touch</h3>
               <div className="space-y-3">
                 <a
-                  href="mailto:mohamed.fasin@example.com"
+                  href="mailto:faseenofficial@gmail.com"
                   className="block text-white/70 hover:text-accent-400 transition-colors duration-200"
                 >
-                  mohamed.fasin@example.com
+                  faseenofficial@gmail.com
                 </a>
                 <div className="text-white/60 text-sm">
                   <div>Response time: Within 24 hours</div>

@@ -50,8 +50,8 @@ All functionality is maintained while being optimized for modern cloud hosting.
    Go to Site settings → Environment variables → Add variables:
    
    EMAIL_USER=faseenofficial@gmail.com
-   EMAIL_PASS=your-16-character-app-password
-   OPENROUTER_API_KEY=sk-or-v1-your-api-key
+   EMAIL_PASS=your-gmail-app-password
+   OPENROUTER_API_KEY=your-openrouter-api-key
    NODE_ENV=production
    SITE_URL=https://your-site.netlify.app
 

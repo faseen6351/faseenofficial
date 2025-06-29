@@ -15,19 +15,21 @@ import Chatbot from './components/Chatbot';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-emerald-900 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-emerald-900 relative overflow-hidden flex flex-col">
         <FloatingElements />
         <Navigation />
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/skills" element={<Skills />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/admin" element={<Admin />} />
-          </Routes>
-        </AnimatePresence>
+        <main className="flex-grow">
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/skills" element={<Skills />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
+          </AnimatePresence>
+        </main>
         <Footer />
         <Chatbot />
       </div>
