@@ -1,0 +1,6 @@
+# This file ensures the data directory is created in git
+# The data directory will store:
+# - submissions.json (contact form submissions)
+# - security_logs.json (security events and login attempts)
+# - login_attempts.json (admin login attempts)
+# - chat_logs.json (chatbot conversations)

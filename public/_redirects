@@ -1,0 +1,16 @@
+# Netlify redirects file (backup for netlify.toml)
+
+# SPA routing - redirect all non-API requests to index.html
+/*    /index.html   200
+
+# PHP API redirects won't work on Netlify - commenting out
+# /api/contact    /public/api/contact.php    200
+# /api/admin      /public/api/admin.php      200
+# /api/chatbot    /public/api/chatbot.php    200
+# /api/health     /public/api/health.php     200
+
+# Security redirects
+/admin          /admin/                    301
+/.env           /404.html                  404
+/config/*       /404.html                  404
+/data/*         /404.html                  404

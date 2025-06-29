@@ -1,0 +1,102 @@
+[build]
+  publish = "dist"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# SPA routing - redirect all non-API requests to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+
+# API redirects to serverless functions
+[[redirects]]
+  from = "/api/contact"
+  to = "/.netlify/functions/contact"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/admin"
+  to = "/.netlify/functions/admin"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/chatbot"
+  to = "/.netlify/functions/chatbot"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
+  force = true
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# CORS headers for API endpoints
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS, DELETE"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Environment variables (set these in Netlify dashboard)
+# OPENROUTER_API_KEY = "your-openrouter-api-key"
+# EMAIL_USER = "your-email@gmail.com"
+# EMAIL_PASS = "your-app-password"
+# ENVIRONMENT = "production"
+
+# Remove functions configuration since PHP won't work
+# [functions]
+#   directory = "public/api"
+#   node_bundler = "esbuild"
+
+# Form handling (if using Netlify forms as backup)
+[forms]
+  settings = { spam_protection = true }
+
+# Remove edge functions that aren't properly configured
+# [[edge_functions]]
+#   function = "auth"
+#   path = "/admin/*"
+
+# Build plugins
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+
+# Remove HTML minification plugin for now
+# [[plugins]]
+#   package = "netlify-plugin-minify-html"
+#   [plugins.inputs]
+#     contexts = ["production"]
