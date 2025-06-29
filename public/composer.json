@@ -1,0 +1,16 @@
+{
+    "name": "mohamed-fasin/portfolio-backend",
+    "description": "PHP backend for Mohamed Fasin's portfolio website",
+    "type": "project",
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Portfolio\\": "src/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
