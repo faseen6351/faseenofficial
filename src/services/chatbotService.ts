@@ -1,4 +1,4 @@
-import axios from 'axios';
+// Using fetch instead of axios for API calls
 
 interface Message {
   id: string;
@@ -33,8 +33,6 @@ interface ChatResponse {
 }
 
 class ChatbotService {
-  private readonly apiKey = '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';
-  private readonly baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
   
   // Knowledge base for instant responses
   private knowledgeBase = {
@@ -171,6 +169,33 @@ class ChatbotService {
     return nameMatch ? nameMatch[2] : null;
   }
 
+  // Call backend API for chatbot responses
+  private async callBackendAPI(message: string, conversationHistory: Message[], session: ChatSession): Promise<string> {
+    try {
+      const response = await fetch('/api/chatbot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message,
+          conversationHistory,
+          session
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      return result.response || result.message || "I'm having trouble responding right now. Please try again!";
+    } catch (error) {
+      console.error('Backend API call failed:', error);
+      throw error;
+    }
+  }
+
   // Generate local response for common queries
   private generateLocalResponse(intent: string, message: string, session: ChatSession): string | null {
     const visitorName = session.visitorName ? `, ${session.visitorName}` : '';
@@ -237,40 +262,7 @@ Your role is to:
 Respond as Mohamed's knowledgeable assistant who genuinely cares about helping visitors find what they need. Be conversational and ask follow-up questions to better understand their needs.`;
   }
 
-  // Call OpenRouter API
-  private async callOpenRouterAPI(prompt: string, systemPrompt: string): Promise<string> {
-    try {
-      const response = await axios.post(
-        this.baseUrl,
-        {
-          model: 'qwen/qwen-2.5-32b-instruct:free',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: prompt }
-          ],
-          max_tokens: 300,
-          temperature: 0.7,
-          top_p: 0.9,
-          frequency_penalty: 0.1,
-          presence_penalty: 0.1
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${this.apiKey}`,
-            'Content-Type': 'application/json',
-            'HTTP-Referer': window.location.origin,
-            'X-Title': 'Mohamed Fasin Portfolio'
-          }
-        }
-      );
-
-      return response.data.choices[0]?.message?.content || 
-        "I'm having trouble processing that right now. Could you try rephrasing your question?";
-    } catch (error) {
-      console.error('OpenRouter API error:', error);
-      throw new Error('Failed to get AI response');
-    }
-  }
+  // Removed OpenRouter API call - now using backend API
 
   // Main method to get chatbot response
   async getResponse(request: ChatRequest): Promise<ChatResponse> {
@@ -300,10 +292,9 @@ Respond as Mohamed's knowledgeable assistant who genuinely cares about helping v
       };
     }
 
-    // Use OpenRouter API for complex queries
+    // Use backend API for complex queries
     try {
-      const systemPrompt = this.createSystemPrompt(updatedSession);
-      const aiResponse = await this.callOpenRouterAPI(message, systemPrompt);
+      const aiResponse = await this.callBackendAPI(message, request.conversationHistory, updatedSession);
       
       return {
         message: aiResponse,

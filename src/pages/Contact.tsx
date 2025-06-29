@@ -28,18 +28,42 @@ const Contact: React.FC = () => {
     setIsSubmitting(true);
     
     try {
-      // Here you would typically send the data to your backend
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-      setSubmitStatus('success');
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        projectType: '',
-        message: '',
-        preferredContact: 'email',
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          projectType: formData.projectType,
+          message: formData.message,
+          preferredContact: formData.preferredContact,
+        }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          projectType: '',
+          message: '',
+          preferredContact: 'email',
+        });
+      } else {
+        throw new Error(result.message || 'Failed to send message');
+      }
     } catch (error) {
+      console.error('Contact form error:', error);
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -51,8 +75,8 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'mohamed.fasin@example.com',
-      link: 'mailto:mohamed.fasin@example.com',
+      value: 'faseenofficial@gmail.com',
+      link: 'mailto:faseenofficial@gmail.com',
     },
     {
       icon: Phone,
@@ -84,7 +108,7 @@ const Contact: React.FC = () => {
     {
       icon: Mail,
       name: 'Email',
-      url: 'mailto:mohamed.fasin@example.com',
+      url: 'mailto:faseenofficial@gmail.com',
       color: 'hover:text-accent-400',
     },
   ];
