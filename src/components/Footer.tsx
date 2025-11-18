@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Code, Mail, Linkedin, Github, MapPin, Calendar } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Footer: React.FC = () => {
+  const { isProfessional } = useTheme();
   const currentYear = new Date().getFullYear();
 
   const socialLinks = [
@@ -46,29 +48,37 @@ const Footer: React.FC = () => {
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <motion.div
+              key={isProfessional ? 'prof-footer' : 'pers-footer'}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="mb-6"
             >
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-accent-400 to-emerald-400 rounded-lg flex items-center justify-center">
-                  <Code className="w-5 h-5 text-white" />
-                </div>
+                <motion.img
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  src={isProfessional ? '/FaseenLogo.png' : '/FaseenPersonal.jpg'}
+                  alt="Mohamed Fasin"
+                  className="w-10 h-10 rounded-lg object-cover"
+                />
                 <span className="text-xl font-bold text-white">Mohamed Fasin</span>
               </div>
               <p className="text-white/70 text-lg leading-relaxed mb-6">
-                Empathetic software engineer crafting meaningful digital experiences through 
-                innovative technology and human-centered design.
+                {isProfessional
+                  ? 'Empathetic software engineer crafting meaningful digital experiences through innovative technology and human-centered design.'
+                  : 'Multilingual connector building bridges across cultures through empathy, language learning, and genuine human understanding.'
+                }
               </p>
               <div className="flex items-center space-x-4 text-white/60 text-sm">
                 <div className="flex items-center space-x-2">
                   <MapPin className="w-4 h-4" />
-                  <span>Sri Lanka</span>
+                  <span>Abu Dhabi, UAE</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4" />
-                  <span>Available for Projects</span>
+                  <span>Available • Own Visa</span>
                 </div>
               </div>
             </motion.div>
@@ -132,9 +142,16 @@ const Footer: React.FC = () => {
                 >
                   faseenofficial@gmail.com
                 </a>
+                <a
+                  href="tel:+971509838149"
+                  className="block text-white/70 hover:text-accent-400 transition-colors duration-200"
+                >
+                  +971 50 983 8149
+                </a>
                 <div className="text-white/60 text-sm">
                   <div>Response time: Within 24 hours</div>
-                  <div>Time zone: UTC+5:30</div>
+                  <div>Time zone: UAE (UTC+4)</div>
+                  <div>Location: Abu Dhabi, UAE</div>
                 </div>
               </div>
             </motion.div>

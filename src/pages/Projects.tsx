@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Eye, Filter } from 'lucide-react';
+import { ExternalLink, Github, Eye, Filter, Heart, Users, Languages, Brain } from 'lucide-react';
 import PageWrapper from '../components/PageWrapper';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import { useTheme } from '../context/ThemeContext';
 
 const Projects: React.FC = () => {
+  const { isProfessional } = useTheme();
   const [activeFilter, setActiveFilter] = useState('all');
 
-  const filters = [
+  const professionalFilters = [
     { id: 'all', name: 'All Projects' },
     { id: 'web', name: 'Web Apps' },
     { id: '3d', name: '3D Projects' },
@@ -16,7 +18,16 @@ const Projects: React.FC = () => {
     { id: 'ai', name: 'AI/ML' },
   ];
 
-  const projects = [
+  const personalFilters = [
+    { id: 'all', name: 'All Experiences' },
+    { id: 'languages', name: 'Languages' },
+    { id: 'connections', name: 'Connections' },
+    { id: 'community', name: 'Community' },
+  ];
+
+  const filters = isProfessional ? professionalFilters : personalFilters;
+
+  const professionalProjects = [
     {
       id: 1,
       title: 'Interactive 3D Portfolio',
@@ -84,6 +95,65 @@ const Projects: React.FC = () => {
       featured: false,
     },
   ];
+
+  const personalProjects = [
+    {
+      id: 1,
+      title: 'Multilingual Community Building',
+      description: 'Created meaningful connections across 7+ languages, helping people from diverse backgrounds understand each other and build lasting friendships.',
+      category: 'languages',
+      image: 'https://images.pexels.com/photos/1543895/pexels-photo-1543895.jpeg?auto=compress&cs=tinysrgb&w=600',
+      technologies: ['English', 'Tamil', 'Arabic', 'Spanish', 'French'],
+      featured: true,
+    },
+    {
+      id: 2,
+      title: 'Cross-Cultural Connection Hub',
+      description: 'Facilitated deep emotional connections between individuals from different cultural backgrounds through empathy, active listening, and genuine understanding.',
+      category: 'connections',
+      image: 'https://images.pexels.com/photos/1157557/pexels-photo-1157557.jpeg?auto=compress&cs=tinysrgb&w=600',
+      technologies: ['Empathy', 'Cultural Awareness', 'Active Listening', 'Trust Building'],
+      featured: true,
+    },
+    {
+      id: 3,
+      title: 'Language Exchange Network',
+      description: 'Built a network of language learners and native speakers, creating spaces for authentic cultural exchange and mutual learning.',
+      category: 'languages',
+      image: 'https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=600',
+      technologies: ['Language Teaching', 'Cultural Exchange', 'Mentorship'],
+      featured: false,
+    },
+    {
+      id: 4,
+      title: 'Emotional Support Community',
+      description: 'Provided compassionate support and understanding to individuals navigating life challenges through deep empathy and non-judgmental listening.',
+      category: 'community',
+      image: 'https://images.pexels.com/photos/1595385/pexels-photo-1595385.jpeg?auto=compress&cs=tinysrgb&w=600',
+      technologies: ['Empathetic Listening', 'Emotional Intelligence', 'Support', 'Understanding'],
+      featured: false,
+    },
+    {
+      id: 5,
+      title: 'Cultural Bridge Ambassador',
+      description: 'Served as a cultural ambassador, helping people from different backgrounds appreciate and understand each other\'s perspectives and traditions.',
+      category: 'connections',
+      image: 'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=600',
+      technologies: ['Cultural Sensitivity', 'Intercultural Communication', 'Perspective Taking'],
+      featured: false,
+    },
+    {
+      id: 6,
+      title: 'Meaningful Conversation Spaces',
+      description: 'Created safe spaces for deep, authentic conversations where people feel heard, valued, and understood without judgment.',
+      category: 'community',
+      image: 'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=600',
+      technologies: ['Deep Listening', 'Vulnerability', 'Authenticity', 'Trust'],
+      featured: false,
+    },
+  ];
+
+  const projects = isProfessional ? professionalProjects : personalProjects;
 
   const filteredProjects = activeFilter === 'all' 
     ? projects 
@@ -165,19 +235,22 @@ const Projects: React.FC = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
           <motion.div
+            key={isProfessional ? 'prof-hero' : 'pers-hero'}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-              Featured{' '}
-              <span className="bg-gradient-to-r from-accent-400 to-emerald-400 bg-clip-text text-transparent">
-                Projects
+              {isProfessional ? 'Featured ' : 'Meaningful '}
+              <span className={`bg-gradient-to-r ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} bg-clip-text text-transparent`}>
+                {isProfessional ? 'Projects' : 'Experiences'}
               </span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              A showcase of my passion projects, professional work, and experimental creations
-              that demonstrate my technical expertise and creative problem-solving
+              {isProfessional
+                ? 'A showcase of my passion projects, professional work, and experimental creations that demonstrate my technical expertise and creative problem-solving'
+                : 'A collection of meaningful connections, cultural bridges, and deep relationships built through empathy, language, and genuine understanding'
+              }
             </p>
           </motion.div>
         </div>
@@ -187,13 +260,21 @@ const Projects: React.FC = () => {
       <section className="py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <motion.div
+            key={isProfessional ? 'prof-featured' : 'pers-featured'}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="mb-12"
           >
-            <h2 className="text-3xl font-bold text-white mb-4">Featured Work</h2>
-            <p className="text-white/70">My most impactful and innovative projects</p>
+            <h2 className="text-3xl font-bold text-white mb-4">
+              {isProfessional ? 'Featured Work' : 'Core Experiences'}
+            </h2>
+            <p className="text-white/70">
+              {isProfessional
+                ? 'My most impactful and innovative projects'
+                : 'My most meaningful connections and cultural contributions'
+              }
+            </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-8 mb-16">
@@ -254,20 +335,25 @@ const Projects: React.FC = () => {
       {/* Call to Action */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <Card>
+          <Card key={isProfessional ? 'prof-cta' : 'pers-cta'}>
             <h2 className="text-3xl font-bold text-white mb-6">
-              Let's Build Something Amazing Together
+              {isProfessional
+                ? "Let's Build Something Amazing Together"
+                : "Let's Connect and Create Meaningful Bonds"
+              }
             </h2>
             <p className="text-white/80 text-lg mb-8">
-              Have a project in mind? I'd love to hear about it and explore how we can
-              bring your vision to life with cutting-edge technology and thoughtful design.
+              {isProfessional
+                ? "Have a project in mind? I'd love to hear about it and explore how we can bring your vision to life with cutting-edge technology and thoughtful design."
+                : "Looking to build genuine connections across cultures? I'd love to connect with you and share experiences, learn languages together, or simply have meaningful conversations."
+              }
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg">
-                Start a Project
+                {isProfessional ? 'Start a Project' : 'Connect With Me'}
               </Button>
               <Button variant="outline" size="lg">
-                View More Work
+                {isProfessional ? 'View More Work' : 'Learn More About Me'}
               </Button>
             </div>
           </Card>

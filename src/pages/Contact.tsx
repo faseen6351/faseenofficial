@@ -4,8 +4,10 @@ import { Mail, Phone, MapPin, Send, Linkedin, Github, Heart } from 'lucide-react
 import PageWrapper from '../components/PageWrapper';
 import Card from '../components/Card';
 import Button from '../components/Button';
+import { useTheme } from '../context/ThemeContext';
 
 const Contact: React.FC = () => {
+  const { isProfessional } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -81,13 +83,13 @@ const Contact: React.FC = () => {
     {
       icon: Phone,
       title: 'Phone',
-      value: '+94 XX XXX XXXX',
-      link: 'tel:+94XXXXXXXXX',
+      value: '+971 50 983 8149',
+      link: 'tel:+971509838149',
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'Sri Lanka',
+      value: 'Abu Dhabi, UAE',
       link: '#',
     },
   ];
@@ -128,19 +130,22 @@ const Contact: React.FC = () => {
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
           <motion.div
+            key={isProfessional ? 'prof-contact' : 'pers-contact'}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
               Let's{' '}
-              <span className="bg-gradient-to-r from-accent-400 to-emerald-400 bg-clip-text text-transparent">
+              <span className={`bg-gradient-to-r ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} bg-clip-text text-transparent`}>
                 Connect
               </span>
             </h1>
             <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              I'm always excited to collaborate on meaningful projects and connect with
-              fellow developers, designers, and innovators. Let's create something amazing together.
+              {isProfessional
+                ? "I'm always excited to collaborate on meaningful projects and connect with fellow developers, designers, and innovators. Let's create something amazing together."
+                : "I'm always eager to meet new people, share languages and cultures, and build genuine friendships. Let's connect and create meaningful bonds together."
+              }
             </p>
           </motion.div>
         </div>
@@ -366,22 +371,34 @@ const Contact: React.FC = () => {
                   <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
                   <span className="text-white/80">Available for new projects</span>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+                  <span className="text-white/80">Own Visa Holder</span>
+                </div>
                 <div className="text-white/60 text-sm">
                   <strong>Response Time:</strong> Within 24 hours
                 </div>
                 <div className="text-white/60 text-sm">
-                  <strong>Time Zone:</strong> Sri Lanka Standard Time (UTC+5:30)
+                  <strong>Time Zone:</strong> UAE Standard Time (UTC+4)
+                </div>
+                <div className="text-white/60 text-sm">
+                  <strong>Location:</strong> Abu Dhabi, UAE
+                </div>
+                <div className="text-white/60 text-sm">
+                  <strong>Origin:</strong> Kerala, Thrissur, India
                 </div>
               </div>
             </Card>
 
             {/* Personal Touch */}
-            <Card>
+            <Card key={isProfessional ? 'prof-quote' : 'pers-quote'}>
               <div className="text-center">
-                <Heart className="w-8 h-8 text-accent-400 mx-auto mb-4" />
+                <Heart className={`w-8 h-8 ${isProfessional ? 'text-accent-400' : 'text-pink-400'} mx-auto mb-4`} />
                 <p className="text-white/80 text-sm">
-                  "I believe every great project starts with a meaningful conversation.
-                  Let's discuss how we can bring your vision to life with empathy and innovation."
+                  {isProfessional
+                    ? '"I believe every great project starts with a meaningful conversation. Let\'s discuss how we can bring your vision to life with empathy and innovation."'
+                    : '"Every meaningful connection begins with genuine conversation and mutual understanding. I\'d love to hear your story and share mine."'
+                  }
                 </p>
                 <p className="text-white/60 text-xs mt-2">- Mohamed Fasin</p>
               </div>

@@ -17,10 +17,11 @@ const Card: React.FC<CardProps> = ({
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.6 }}
-      whileHover={hover ? { y: -5, scale: 1.02 } : {}}
-      className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg ${className}`}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay, duration: 0.6, type: "spring", stiffness: 100 }}
+      whileHover={hover ? { y: -8, scale: 1.02, transition: { duration: 0.3 } } : {}}
+      className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg hover:shadow-xl hover:border-white/30 transition-all duration-300 ${className}`}
     >
       {children}
     </motion.div>

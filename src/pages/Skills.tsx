@@ -215,13 +215,26 @@ const Skills: React.FC = () => {
         <span className="text-accent-400 font-bold">{skill.level}%</span>
       </div>
       
-      <div className="w-full bg-white/10 rounded-full h-2 mb-4">
+      <div className="w-full bg-white/10 rounded-full h-2 mb-4 overflow-hidden">
         <motion.div
-          className={`h-2 bg-gradient-to-r ${skill.color} rounded-full`}
+          className={`h-2 bg-gradient-to-r ${skill.color} rounded-full relative`}
           initial={{ width: 0 }}
-          animate={{ width: `${skill.level}%` }}
-          transition={{ duration: 1, delay: index * 0.1 }}
-        />
+          whileInView={{ width: `${skill.level}%` }}
+          viewport={{ once: true }}
+          transition={{ duration: 1.2, delay: index * 0.1, ease: "easeOut" }}
+        >
+          <motion.div
+            className="absolute inset-0 bg-white/30"
+            initial={{ x: '-100%' }}
+            animate={{ x: '200%' }}
+            transition={{
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "linear",
+              delay: index * 0.1 + 1.2
+            }}
+          />
+        </motion.div>
       </div>
       
       <p className="text-white/70 text-sm">{skill.description}</p>

@@ -81,7 +81,7 @@ const Home: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, type: "spring", stiffness: 80 }}
             className="mb-8"
           >
             <motion.div
@@ -89,9 +89,21 @@ const Home: React.FC = () => {
               key={isProfessional ? 'professional' : 'personal'}
               initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ duration: 0.5 }}
+              whileHover={{ scale: 1.05, rotate: 2 }}
+              transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} rounded-full blur-lg opacity-50`}></div>
+              <motion.div
+                className={`absolute inset-0 bg-gradient-to-br ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} rounded-full blur-lg opacity-50`}
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.5, 0.7, 0.5]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              ></motion.div>
               <img
                 src={isProfessional ? '/FaseenLogo.png' : '/FaseenPersonal.jpg'}
                 alt="Mohamed Fasin"

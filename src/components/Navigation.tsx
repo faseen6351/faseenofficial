@@ -49,9 +49,15 @@ const Navigation: React.FC = () => {
               className="flex items-center space-x-2"
             >
               <Link to="/" className="flex items-center space-x-2 text-white">
-                <div className="w-8 h-8 bg-gradient-to-br from-accent-400 to-emerald-400 rounded-lg flex items-center justify-center">
-                  <Code className="w-4 h-4 text-white" />
-                </div>
+                <motion.img
+                  key={isProfessional ? 'prof-nav' : 'pers-nav'}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                  src={isProfessional ? '/FaseenLogo.png' : '/FaseenPersonal.jpg'}
+                  alt="Mohamed Fasin"
+                  className="w-8 h-8 rounded-lg object-cover"
+                />
                 <span className="font-semibold text-lg">Mohamed Fasin</span>
               </Link>
             </motion.div>

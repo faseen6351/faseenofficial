@@ -210,12 +210,17 @@ const About: React.FC = () => {
                 key={item.year}
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
+                whileHover={{ x: 10, transition: { duration: 0.3 } }}
+                transition={{ duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 100 }}
                 className="relative flex items-start mb-12"
               >
-                <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-accent-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-bold mr-8">
+                <motion.div
+                  className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-accent-400 to-emerald-400 rounded-full flex items-center justify-center text-white font-bold mr-8"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
                   {item.year}
-                </div>
+                </motion.div>
                 <div className="flex-grow">
                   <h3 className="text-xl font-semibold text-white mb-2">{item.title}</h3>
                   <p className="text-white/70">{item.description}</p>
