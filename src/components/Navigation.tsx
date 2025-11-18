@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Code, Heart } from 'lucide-react';
+import { Menu, X, Code, Heart, Briefcase, User } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Navigation: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { mode, toggleMode, isProfessional } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,8 +57,8 @@ const Navigation: React.FC = () => {
             </motion.div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:block">
-              <div className="ml-10 flex items-baseline space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
+              <div className="flex items-baseline space-x-8">
                 {navItems.map((item) => (
                   <Link
                     key={item.name}
@@ -79,6 +81,34 @@ const Navigation: React.FC = () => {
                   </Link>
                 ))}
               </div>
+
+              {/* Mode Toggle Switch */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={toggleMode}
+                className="relative flex items-center space-x-2 px-4 py-2 bg-white/10 rounded-full border border-white/20 hover:bg-white/15 transition-all duration-300"
+                title={isProfessional ? 'Switch to Personal' : 'Switch to Professional'}
+              >
+                <motion.div
+                  className="flex items-center space-x-2"
+                  initial={false}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {isProfessional ? (
+                    <>
+                      <Briefcase className="w-4 h-4 text-accent-400" />
+                      <span className="text-sm text-white/80">Professional</span>
+                    </>
+                  ) : (
+                    <>
+                      <Heart className="w-4 h-4 text-pink-400" />
+                      <span className="text-sm text-white/80">Personal</span>
+                    </>
+                  )}
+                </motion.div>
+              </motion.button>
             </div>
 
             {/* Mobile menu button */}
@@ -116,6 +146,24 @@ const Navigation: React.FC = () => {
                     {item.name}
                   </Link>
                 ))}
+
+                {/* Mobile Mode Toggle */}
+                <button
+                  onClick={toggleMode}
+                  className="w-full flex items-center justify-center space-x-2 px-3 py-2 mt-2 bg-white/10 rounded-md border border-white/20 hover:bg-white/15 transition-all duration-300"
+                >
+                  {isProfessional ? (
+                    <>
+                      <Briefcase className="w-4 h-4 text-accent-400" />
+                      <span className="text-sm text-white/80">Switch to Personal</span>
+                    </>
+                  ) : (
+                    <>
+                      <Heart className="w-4 h-4 text-pink-400" />
+                      <span className="text-sm text-white/80">Switch to Professional</span>
+                    </>
+                  )}
+                </button>
               </div>
             </motion.div>
           )}
