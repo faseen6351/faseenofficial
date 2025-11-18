@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
                   transition={{ duration: 0.3 }}
                   src={isProfessional ? '/FaseenLogo.png' : '/FaseenPersonal.jpg'}
                   alt="Mohamed Fasin"
-                  className="w-10 h-10 rounded-lg object-cover"
+                  className={`w-10 h-10 ${isProfessional ? 'object-contain' : 'object-cover rounded-lg'}`}
                 />
                 <span className="text-xl font-bold text-white">Mohamed Fasin</span>
               </div>

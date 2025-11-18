@@ -107,7 +107,7 @@ const Home: React.FC = () => {
               <img
                 src={isProfessional ? '/FaseenLogo.png' : '/FaseenPersonal.jpg'}
                 alt="Mohamed Fasin"
-                className="relative w-full h-full rounded-full object-cover border-4 border-white/20"
+                className={`relative w-full h-full ${isProfessional ? 'object-contain' : 'rounded-full object-cover border-4 border-white/20'}`}
               />
             </motion.div>
           </motion.div>

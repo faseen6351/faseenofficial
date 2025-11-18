@@ -56,7 +56,7 @@ const Navigation: React.FC = () => {
                   transition={{ duration: 0.3 }}
                   src={isProfessional ? '/FaseenLogo.png' : '/FaseenPersonal.jpg'}
                   alt="Mohamed Fasin"
-                  className="w-8 h-8 rounded-lg object-cover"
+                  className={`w-8 h-8 ${isProfessional ? 'object-contain' : 'object-cover rounded-lg'}`}
                 />
                 <span className="font-semibold text-lg">Mohamed Fasin</span>
               </Link>
@@ -89,32 +89,37 @@ const Navigation: React.FC = () => {
               </div>
 
               {/* Mode Toggle Switch */}
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={toggleMode}
-                className="relative flex items-center space-x-2 px-4 py-2 bg-white/10 rounded-full border border-white/20 hover:bg-white/15 transition-all duration-300"
-                title={isProfessional ? 'Switch to Personal' : 'Switch to Professional'}
-              >
+              <div className="flex items-center space-x-3">
                 <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
                   className="flex items-center space-x-2"
-                  initial={false}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
                 >
-                  {isProfessional ? (
-                    <>
-                      <Briefcase className="w-4 h-4 text-accent-400" />
-                      <span className="text-sm text-white/80">Professional</span>
-                    </>
-                  ) : (
-                    <>
-                      <Heart className="w-4 h-4 text-pink-400" />
-                      <span className="text-sm text-white/80">Personal</span>
-                    </>
-                  )}
+                  <Briefcase className={`w-4 h-4 ${isProfessional ? 'text-accent-400' : 'text-white/40'}`} />
+                  <button
+                    onClick={toggleMode}
+                    className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
+                      isProfessional ? 'bg-accent-400/30 border-accent-400' : 'bg-pink-400/30 border-pink-400'
+                    } border-2`}
+                    title={isProfessional ? 'Switch to Personal Mode' : 'Switch to Professional Mode'}
+                  >
+                    <motion.div
+                      className={`absolute top-0.5 w-5 h-5 rounded-full ${
+                        isProfessional ? 'bg-accent-400' : 'bg-pink-400'
+                      } shadow-lg`}
+                      animate={{
+                        left: isProfessional ? '2px' : 'calc(100% - 22px)'
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 30
+                      }}
+                    />
+                  </button>
+                  <Heart className={`w-4 h-4 ${!isProfessional ? 'text-pink-400' : 'text-white/40'}`} />
                 </motion.div>
-              </motion.button>
+              </div>
             </div>
 
             {/* Mobile menu button */}
