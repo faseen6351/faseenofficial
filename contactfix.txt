@@ -1,0 +1,661 @@
+// netlify/functions/contact.ts
+import { Handler } from '@netlify/functions';
+
+interface ContactFormData {
+  name: string;
+  email: string;
+  phone?: string;
+  projectType?: string;
+  message: string;
+  preferredContact: 'email' | 'phone';
+}
+
+const handler: Handler = async (event, context) => {
+  // Handle CORS
+  const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  };
+
+  // Handle preflight request
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers,
+      body: '',
+    };
+  }
+
+  // Only allow POST requests
+  if (event.httpMethod !== 'POST') {
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ error: 'Method not allowed' }),
+    };
+  }
+
+  try {
+    // Parse the request body
+    const data: ContactFormData = JSON.parse(event.body || '{}');
+    
+    // Validate required fields
+    if (!data.name || !data.email || !data.message) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          success: false, 
+          message: 'Name, email, and message are required' 
+        }),
+      };
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ 
+          success: false, 
+          message: 'Please provide a valid email address' 
+        }),
+      };
+    }
+
+    // Create email content
+    const emailSubject = `New Contact Form Submission from ${data.name}`;
+    const emailBody = `
+New contact form submission from your portfolio website:
+
+Name: ${data.name}
+Email: ${data.email}
+Phone: ${data.phone || 'Not provided'}
+Project Type: ${data.projectType || 'Not specified'}
+Preferred Contact: ${data.preferredContact}
+
+Message:
+${data.message}
+
+Submitted at: ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Colombo' })} (Sri Lanka Time)
+    `.trim();
+
+    // Use Netlify Forms or EmailJS
+    // Option 1: Using Netlify's built-in form handling
+    const netlifyFormData = new URLSearchParams();
+    netlifyFormData.append('form-name', 'contact');
+    netlifyFormData.append('name', data.name);
+    netlifyFormData.append('email', data.email);
+    netlifyFormData.append('phone', data.phone || '');
+    netlifyFormData.append('projectType', data.projectType || '');
+    netlifyFormData.append('message', data.message);
+    netlifyFormData.append('preferredContact', data.preferredContact);
+
+    // Submit to Netlify Forms
+    const response = await fetch(`${process.env.URL || 'https://your-site.netlify.app'}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: netlifyFormData.toString(),
+    });
+
+    // Option 2: Using EmailJS (more reliable for email delivery)
+    // You'll need to add EmailJS environment variables to Netlify
+    if (process.env.EMAILJS_SERVICE_ID && process.env.EMAILJS_TEMPLATE_ID && process.env.EMAILJS_PUBLIC_KEY) {
+      const emailjsData = {
+        service_id: process.env.EMAILJS_SERVICE_ID,
+        template_id: process.env.EMAILJS_TEMPLATE_ID,
+        user_id: process.env.EMAILJS_PUBLIC_KEY,
+        template_params: {
+          from_name: data.name,
+          from_email: data.email,
+          phone: data.phone || 'Not provided',
+          project_type: data.projectType || 'Not specified',
+          message: data.message,
+          preferred_contact: data.preferredContact,
+          to_email: 'faseenofficial@gmail.com',
+        },
+      };
+
+      const emailjsResponse = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailjsData),
+      });
+
+      if (!emailjsResponse.ok) {
+        throw new Error('Failed to send email via EmailJS');
+      }
+    }
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ 
+        success: true, 
+        message: 'Message sent successfully!' 
+      }),
+    };
+
+  } catch (error) {
+    console.error('Contact form error:', error);
+    
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ 
+        success: false, 
+        message: 'Failed to send message. Please try again.' 
+      }),
+    };
+  }
+};
+
+export { handler };
+//also 
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Mail, Phone, MapPin, Send, Linkedin, Github, Heart } from 'lucide-react';
+import PageWrapper from '../components/PageWrapper';
+import Card from '../components/Card';
+import Button from '../components/Button';
+
+const Contact: React.FC = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    projectType: '',
+    message: '',
+    preferredContact: 'email',
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Option 1: Using Netlify Functions
+      const response = await fetch('/.netlify/functions/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          projectType: formData.projectType,
+          message: formData.message,
+          preferredContact: formData.preferredContact,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setSubmitStatus('success');
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          projectType: '',
+          message: '',
+          preferredContact: 'email',
+        });
+      } else {
+        throw new Error(result.message || 'Failed to send message');
+      }
+    } catch (error) {
+      console.error('Contact form error:', error);
+      
+      // Fallback: Try direct Netlify form submission
+      try {
+        const formElement = document.createElement('form');
+        formElement.setAttribute('name', 'contact');
+        formElement.setAttribute('method', 'POST');
+        formElement.setAttribute('data-netlify', 'true');
+        formElement.style.display = 'none';
+        
+        // Add form fields
+        const fields = [
+          { name: 'name', value: formData.name },
+          { name: 'email', value: formData.email },
+          { name: 'phone', value: formData.phone },
+          { name: 'projectType', value: formData.projectType },
+          { name: 'message', value: formData.message },
+          { name: 'preferredContact', value: formData.preferredContact },
+        ];
+        
+        fields.forEach(field => {
+          const input = document.createElement('input');
+          input.setAttribute('name', field.name);
+          input.setAttribute('value', field.value);
+          formElement.appendChild(input);
+        });
+        
+        document.body.appendChild(formElement);
+        
+        const submitResponse = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            'form-name': 'contact',
+            ...Object.fromEntries(
+              Object.entries(formData).map(([key, value]) => [key, value])
+            ),
+          }),
+        });
+        
+        document.body.removeChild(formElement);
+        
+        if (submitResponse.ok) {
+          setSubmitStatus('success');
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            projectType: '',
+            message: '',
+            preferredContact: 'email',
+          });
+        } else {
+          throw new Error('Fallback submission failed');
+        }
+      } catch (fallbackError) {
+        console.error('Fallback submission error:', fallbackError);
+        setSubmitStatus('error');
+      }
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    }
+  };
+
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: 'Email',
+      value: 'faseenofficial@gmail.com',
+      link: 'mailto:faseenofficial@gmail.com',
+    },
+    {
+      icon: Phone,
+      title: 'Phone',
+      value: '+94 XX XXX XXXX',
+      link: 'tel:+94XXXXXXXXX',
+    },
+    {
+      icon: MapPin,
+      title: 'Location',
+      value: 'Sri Lanka',
+      link: '#',
+    },
+  ];
+
+  const socialLinks = [
+    {
+      icon: Linkedin,
+      name: 'LinkedIn',
+      url: 'https://linkedin.com/in/mohamed-fasin',
+      color: 'hover:text-blue-400',
+    },
+    {
+      icon: Github,
+      name: 'GitHub',
+      url: 'https://github.com/mohamed-fasin',
+      color: 'hover:text-gray-400',
+    },
+    {
+      icon: Mail,
+      name: 'Email',
+      url: 'mailto:faseenofficial@gmail.com',
+      color: 'hover:text-accent-400',
+    },
+  ];
+
+  const projectTypes = [
+    'Web Application',
+    'Mobile App',
+    '3D/Interactive Experience',
+    'AI/ML Solution',
+    'Consulting',
+    'Other',
+  ];
+
+  return (
+    <PageWrapper>
+      {/* Hidden Netlify form for form detection */}
+      <form name="contact" netlify="true" hidden>
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <input type="tel" name="phone" />
+        <select name="projectType">
+          <option value="">Select a type</option>
+          {projectTypes.map((type) => (
+            <option key={type} value={type}>{type}</option>
+          ))}
+        </select>
+        <textarea name="message"></textarea>
+        <input type="radio" name="preferredContact" value="email" />
+        <input type="radio" name="preferredContact" value="phone" />
+      </form>
+
+      {/* Hero Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+              Let's{' '}
+              <span className="bg-gradient-to-r from-accent-400 to-emerald-400 bg-clip-text text-transparent">
+                Connect
+              </span>
+            </h1>
+            <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
+              I'm always excited to collaborate on meaningful projects and connect with
+              fellow developers, designers, and innovators. Let's create something amazing together.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="grid lg:grid-cols-2 gap-12">
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card>
+              <h2 className="text-2xl font-bold text-white mb-6">Send me a message</h2>
+              
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">
+                      Name *
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
+                      placeholder="Your name"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
+                      placeholder="your@email.com"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-2">
+                      Phone (Optional)
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
+                      placeholder="+94 XX XXX XXXX"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="projectType" className="block text-sm font-medium text-white/80 mb-2">
+                      Project Type
+                    </label>
+                    <select
+                      id="projectType"
+                      name="projectType"
+                      value={formData.projectType}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
+                    >
+                      <option value="" className="bg-gray-800">Select a type</option>
+                      {projectTypes.map((type) => (
+                        <option key={type} value={type} className="bg-gray-800">
+                          {type}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-2">
+                    Message *
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    required
+                    rows={5}
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    maxLength={500}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all resize-none"
+                    placeholder="Tell me about your project or just say hello..."
+                  />
+                  <div className="text-right text-sm text-white/50 mt-1">
+                    {formData.message.length}/500
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-white/80 mb-2">
+                    Preferred Contact Method
+                  </label>
+                  <div className="flex space-x-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="preferredContact"
+                        value="email"
+                        checked={formData.preferredContact === 'email'}
+                        onChange={handleInputChange}
+                        className="mr-2 text-accent-400"
+                      />
+                      <span className="text-white/80">Email</span>
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        name="preferredContact"
+                        value="phone"
+                        checked={formData.preferredContact === 'phone'}
+                        onChange={handleInputChange}
+                        className="mr-2 text-accent-400"
+                      />
+                      <span className="text-white/80">Phone</span>
+                    </label>
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="w-full"
+                  icon={Send}
+                >
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </Button>
+
+                {submitStatus === 'success' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-emerald-500/20 border border-emerald-500/30 rounded-lg p-4 text-emerald-300"
+                  >
+                    🎉 Thank you for your message! I'll get back to you within 24 hours at faseenofficial@gmail.com.
+                  </motion.div>
+                )}
+
+                {submitStatus === 'error' && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 text-red-300"
+                  >
+                    ❌ Sorry, there was an error sending your message. Please try again or email directly at faseenofficial@gmail.com.
+                  </motion.div>
+                )}
+              </form>
+            </Card>
+          </motion.div>
+
+          {/* Contact Information */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-8"
+          >
+            {/* Contact Info */}
+            <Card>
+              <h3 className="text-xl font-semibold text-white mb-6">Get in Touch</h3>
+              <div className="space-y-4">
+                {contactInfo.map((info) => (
+                  <div key={info.title} className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-accent-400/20 to-emerald-400/20 rounded-lg flex items-center justify-center">
+                      <info.icon className="w-6 h-6 text-accent-400" />
+                    </div>
+                    <div>
+                      <div className="text-white/60 text-sm">{info.title}</div>
+                      <a
+                        href={info.link}
+                        className="text-white hover:text-accent-400 transition-colors"
+                      >
+                        {info.value}
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            {/* Social Links */}
+            <Card>
+              <h3 className="text-xl font-semibold text-white mb-6">Connect Online</h3>
+              <div className="flex space-x-4">
+                {socialLinks.map((social) => (
+                  <a
+                    key={social.name}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center text-white/70 transition-all hover:bg-white/20 ${social.color}`}
+                  >
+                    <social.icon className="w-6 h-6" />
+                  </a>
+                ))}
+              </div>
+            </Card>
+
+            {/* Availability */}
+            <Card>
+              <h3 className="text-xl font-semibold text-white mb-4">Current Availability</h3>
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
+                  <span className="text-white/80">Available for new projects</span>
+                </div>
+                <div className="text-white/60 text-sm">
+                  <strong>Response Time:</strong> Within 24 hours
+                </div>
+                <div className="text-white/60 text-sm">
+                  <strong>Time Zone:</strong> Sri Lanka Standard Time (UTC+5:30)
+                </div>
+              </div>
+            </Card>
+
+            {/* Personal Touch */}
+            <Card>
+              <div className="text-center">
+                <Heart className="w-8 h-8 text-accent-400 mx-auto mb-4" />
+                <p className="text-white/80 text-sm">
+                  "I believe every great project starts with a meaningful conversation.
+                  Let's discuss how we can bring your vision to life with empathy and innovation."
+                </p>
+                <p className="text-white/60 text-xs mt-2">- Mohamed Fasin</p>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </div>
+    </PageWrapper>
+  );
+};
+
+export default Contact;
+//Perfect! I've created a complete solution for your Netlify contact form. Here's what I've provided:
+🎯 Solution Overview:
+
+Netlify Function (contact.ts) - A serverless function to handle form submissions
+Updated Contact Component - Works with Netlify's infrastructure
+Setup Guide - Complete instructions for deployment
+
+🔧 Key Features:
+
+✅ No PHP required - Uses Netlify serverless functions
+✅ Email delivery to faseenofficial@gmail.com
+✅ Dual approach - Primary method + fallback
+✅ Error handling - Robust error management
+✅ Form validation - Client and server-side validation
+✅ Success feedback - Clear user feedback
+
+🚀 Quick Setup:
+
+Create the function: Add netlify/functions/contact.ts to your project
+Update component: Replace your Contact.tsx with the new version
+Deploy to Netlify: Push to your connected repository
+Configure notifications: Set up email forwarding in Netlify dashboard
+//Forms
+Manage forms and submissions without any server-side code or JavaScript.
+
+Add an HTML form to your project with a netlify attribute in the <form> tag, enable form detection, and you’ll automatically receive form submissions in your Netlify dashboard. Netlify parses HTML forms directly at deploy time, so there’s no need to make an API call or include extra JavaScript on your project.
+
+Learn more about Forms in the docs
+
+Form detection is enabled.

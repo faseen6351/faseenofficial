@@ -86,8 +86,9 @@ Mohamed's expertise:
 - Mobile: Flutter development
 
 Current Role: Software Engineer at Absons IT Solutions
-Location: Sri Lanka
-Contact: faseenofficial@gmail.com`;
+Location: Abu Dhabi, UAE (Own Visa Holder)
+Origin: Kerala, Thrissur, India
+Contact: faseenofficial@gmail.com | +971 50 983 8149`;
 
   const payload = {
     model: 'qwen/qwen-2.5-32b-instruct:free',

@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(git add src/ public/FaseenLogo.png public/FaseenPersonal.jpg)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nFeature: Professional/Personal Mode Toggle & Enhanced Content\n\nMajor Changes:\n- Added theme context with professional/personal mode toggle\n- Implemented toggle switch in navigation (desktop & mobile)\n- Updated Home page with mode-aware content and logos\n- Enhanced Skills page with language learning & professional skills\n- Updated About page with dual personality content\n\nProfessional Mode Features:\n- Python automation, React web apps, backend, AI tools\n- Technical expertise and professional projects\n- Clean code philosophy and innovation focus\n\nPersonal Mode Features:\n- Language learning capabilities (English, Tamil, Arabic, Spanish, French)\n- Emotional intelligence and empathy strengths\n- Cultural bridge building and deep connections\n- INFJ personality insights\n\nTechnical Updates:\n- Created ThemeContext for global state management\n- Mode-aware components with smooth animations\n- Professional logo (FaseenLogo.png) & Personal logo (FaseenPersonal.jpg)\n- Responsive design improvements across all pages\n- Optimized build output\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

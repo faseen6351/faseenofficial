@@ -46,7 +46,7 @@ const knowledgeBase: KnowledgeBase = {
   },
   contact: {
     patterns: [/contact/i, /email/i, /phone/i, /reach/i, /get in touch/i],
-    response: "You can reach Mohamed at faseenofficial@gmail.com{name}. He typically responds within 24 hours and is based in Sri Lanka (UTC+5:30). Would you like me to help you prepare your message or learn more about his work first?"
+    response: "You can reach Mohamed at faseenofficial@gmail.com{name} or call +971 50 983 8149. He typically responds within 24 hours and is based in Abu Dhabi, UAE (UTC+4). He holds his own visa. Would you like me to help you prepare your message or learn more about his work first?"
   },
   skills: {
     patterns: [/skills/i, /experience/i, /expertise/i, /technologies/i, /tech stack/i],

@@ -217,7 +217,7 @@ class ChatbotService {
         return `Mohamed is currently at Absons IT Solutions but is open to discussing interesting consulting opportunities${visitorName}. He values meaningful projects and collaborative relationships. What type of project are you considering?`;
       
       case 'contact':
-        return `You can reach Mohamed at faseenofficial@gmail.com${visitorName}. He typically responds within 24 hours and is based in Sri Lanka (UTC+5:30). Would you like me to help you prepare your message or learn more about his work first?`;
+        return `You can reach Mohamed at faseenofficial@gmail.com${visitorName}. He typically responds within 24 hours and is based in Abu Dhabi, UAE (UTC+4). You can also call him at +971 50 983 8149. Would you like me to help you prepare your message or learn more about his work first?`;
       
       default:
         return null;
