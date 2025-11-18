@@ -1,12 +1,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 const FloatingElements: React.FC = () => {
+  const { colors } = useTheme();
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
       {/* Floating geometric shapes */}
       <motion.div
-        className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-br from-accent-400/10 to-emerald-400/10 rounded-full blur-xl"
+        className={`absolute top-20 left-10 w-20 h-20 bg-gradient-to-br ${colors.gradient} rounded-full blur-xl`}
         animate={{
           y: [0, -30, 0],
           x: [0, 20, 0],
@@ -20,7 +23,7 @@ const FloatingElements: React.FC = () => {
       />
       
       <motion.div
-        className="absolute top-1/3 right-20 w-16 h-16 bg-gradient-to-br from-primary-400/10 to-accent-400/10 rounded-lg blur-lg"
+        className={`absolute top-1/3 right-20 w-16 h-16 bg-gradient-to-br ${colors.gradient} rounded-lg blur-lg`}
         animate={{
           y: [0, 40, 0],
           x: [0, -15, 0],
@@ -34,7 +37,7 @@ const FloatingElements: React.FC = () => {
       />
       
       <motion.div
-        className="absolute bottom-1/4 left-1/4 w-12 h-12 bg-gradient-to-br from-emerald-400/10 to-primary-400/10 rounded-full blur-lg"
+        className={`absolute bottom-1/4 left-1/4 w-12 h-12 bg-gradient-to-br ${colors.gradient} rounded-full blur-lg`}
         animate={{
           y: [0, -25, 0],
           x: [0, 30, 0],
@@ -48,7 +51,7 @@ const FloatingElements: React.FC = () => {
       />
       
       <motion.div
-        className="absolute top-2/3 right-1/3 w-8 h-8 bg-gradient-to-br from-accent-400/15 to-emerald-400/15 rounded-full blur-sm"
+        className={`absolute top-2/3 right-1/3 w-8 h-8 bg-gradient-to-br ${colors.gradient} rounded-full blur-sm`}
         animate={{
           y: [0, 20, 0],
           x: [0, -10, 0],

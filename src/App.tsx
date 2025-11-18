@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ThemeProvider } from './context/ThemeContext';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -16,27 +16,35 @@ import Chatbot from './components/Chatbot';
 function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-emerald-900 relative overflow-hidden flex flex-col">
-          <FloatingElements />
-          <Navigation />
-          <main className="flex-grow">
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/skills" element={<Skills />} />
-                <Route path="/projects" element={<Projects />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/admin" element={<Admin />} />
-              </Routes>
-            </AnimatePresence>
-          </main>
-          <Footer />
-          <Chatbot />
-        </div>
-      </Router>
+      <AppContent />
     </ThemeProvider>
+  );
+}
+
+function AppContent() {
+  const { colors } = useTheme();
+
+  return (
+    <Router>
+      <div className={`min-h-screen bg-gradient-to-br ${colors.primary} relative overflow-hidden flex flex-col transition-all duration-700`}>
+        <FloatingElements />
+        <Navigation />
+        <main className="flex-grow">
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/skills" element={<Skills />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/admin" element={<Admin />} />
+            </Routes>
+          </AnimatePresence>
+        </main>
+        <Footer />
+        <Chatbot />
+      </div>
+    </Router>
   );
 }
 

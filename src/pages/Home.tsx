@@ -9,7 +9,7 @@ import InteractiveElements from '../components/InteractiveElements';
 import { useTheme } from '../context/ThemeContext';
 
 const Home: React.FC = () => {
-  const { isProfessional } = useTheme();
+  const { isProfessional, colors } = useTheme();
   const professionalStats = [
     { number: '3+', label: 'Years Experience' },
     { number: '25+', label: 'Projects Completed' },
@@ -93,7 +93,7 @@ const Home: React.FC = () => {
               transition={{ duration: 0.5, type: "spring", stiffness: 200 }}
             >
               <motion.div
-                className={`absolute inset-0 bg-gradient-to-br ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} rounded-full blur-lg opacity-50`}
+                className={`absolute inset-0 bg-gradient-to-br ${colors.secondary} rounded-full blur-lg opacity-50`}
                 animate={{
                   scale: [1, 1.1, 1],
                   opacity: [0.5, 0.7, 0.5]
@@ -113,13 +113,14 @@ const Home: React.FC = () => {
           </motion.div>
 
           <motion.h1
+            key={isProfessional ? 'prof-title' : 'pers-title'}
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6"
           >
             Hello, I'm{' '}
-            <span className="bg-gradient-to-r from-accent-400 to-emerald-400 bg-clip-text text-transparent">
+            <span className={`bg-gradient-to-r ${colors.secondary} bg-clip-text text-transparent`}>
               Mohamed Fasin
             </span>
           </motion.h1>
@@ -134,10 +135,10 @@ const Home: React.FC = () => {
             {isProfessional ? (
               <>
                 A passionate software engineer specializing in{' '}
-                <span className="text-accent-400">Python automation</span>,{' '}
-                <span className="text-emerald-400">React web apps</span>,{' '}
-                <span className="text-blue-400">backend development</span>, and{' '}
-                <span className="text-purple-400">AI-powered tools</span>.
+                <span className={colors.textAccent}>Python automation</span>,{' '}
+                <span className={colors.textAccent}>React web apps</span>,{' '}
+                <span className={colors.textAccent}>backend development</span>, and{' '}
+                <span className={colors.textAccent}>AI-powered tools</span>.
               </>
             ) : (
               <>
