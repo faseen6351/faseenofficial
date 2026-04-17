@@ -148,11 +148,11 @@ const Chatbot: React.FC = () => {
   };
 
   const quickActions = [
-    "Tell me about Mohamed's React experience",
-    "What 3D projects has he worked on?",
-    "I need help with a web application",
-    "What's his availability for consulting?",
-    "Show me his latest projects"
+    "Tell me about his Flutter & mobile work",
+    "What AI engineering projects has he built?",
+    "Show me his published iOS & Android apps",
+    "I need a full-stack solution built",
+    "What's his availability for new roles?"
   ];
 
   if (!isOpen) {
@@ -167,13 +167,14 @@ const Chatbot: React.FC = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => setIsOpen(true)}
-          className="w-14 h-14 bg-gradient-to-br from-accent-500 to-emerald-500 rounded-full shadow-lg flex items-center justify-center text-white hover:shadow-xl transition-all duration-300"
+          className="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-lg shadow-cyan-500/20 flex items-center justify-center text-white hover:shadow-xl hover:shadow-cyan-500/30 transition-all duration-300"
+          aria-label="Open AI assistant"
         >
           <MessageCircle className="w-6 h-6" />
           <motion.div
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="absolute inset-0 bg-gradient-to-br from-accent-400/30 to-emerald-400/30 rounded-full"
+            animate={{ scale: [1, 1.5, 1], opacity: [0.6, 0, 0.6] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeOut' }}
+            className="absolute inset-0 bg-cyan-400/40 rounded-full"
           />
         </motion.button>
       </motion.div>
@@ -191,17 +192,20 @@ const Chatbot: React.FC = () => {
           : 'bottom-6 right-6 w-96 h-[600px] md:w-[420px] md:h-[700px]'
       }`}
     >
-      <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
+      <div className="bg-slate-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden h-full flex flex-col">
         {/* Header */}
-        <div className="bg-gradient-to-r from-accent-500/20 to-emerald-500/20 p-4 border-b border-white/10">
+        <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-4 border-b border-white/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-br from-accent-400 to-emerald-400 rounded-full flex items-center justify-center">
+              <div className="w-9 h-9 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-cyan-500/20">
                 <Bot className="w-4 h-4 text-white" />
               </div>
               <div>
-                <h3 className="text-white font-semibold text-sm">Elly - Fasin AI</h3>
-                <p className="text-white/60 text-xs">Personal Assistant</p>
+                <h3 className="text-white font-semibold text-sm">Elly · AI Assistant</h3>
+                <p className="text-cyan-400/80 text-xs flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                  Online
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -242,21 +246,21 @@ const Chatbot: React.FC = () => {
                   <div className={`flex items-start space-x-2 max-w-[80%] ${
                     message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''
                   }`}>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      message.sender === 'user' 
-                        ? 'bg-accent-500' 
-                        : 'bg-gradient-to-br from-emerald-400 to-blue-400'
+                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      message.sender === 'user'
+                        ? 'bg-cyan-500'
+                        : 'bg-gradient-to-br from-cyan-500 to-blue-600'
                     }`}>
                       {message.sender === 'user' ? (
-                        <User className="w-3 h-3 text-white" />
+                        <User className="w-3.5 h-3.5 text-white" />
                       ) : (
-                        <Bot className="w-3 h-3 text-white" />
+                        <Bot className="w-3.5 h-3.5 text-white" />
                       )}
                     </div>
-                    <div className={`rounded-2xl px-4 py-2 ${
+                    <div className={`rounded-2xl px-4 py-2.5 ${
                       message.sender === 'user'
-                        ? 'bg-accent-500 text-white'
-                        : 'bg-white/10 text-white border border-white/20'
+                        ? 'bg-cyan-500 text-white'
+                        : 'bg-white/5 text-white border border-white/10'
                     }`}>
                       <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                       <p className="text-xs opacity-60 mt-1">
@@ -274,10 +278,10 @@ const Chatbot: React.FC = () => {
                   className="flex justify-start"
                 >
                   <div className="flex items-start space-x-2">
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-blue-400 flex items-center justify-center">
-                      <Bot className="w-3 h-3 text-white" />
+                    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
+                      <Bot className="w-3.5 h-3.5 text-white" />
                     </div>
-                    <div className="bg-white/10 border border-white/20 rounded-2xl px-4 py-2">
+                    <div className="bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
                       <div className="flex space-x-1">
                         <motion.div
                           animate={{ scale: [1, 1.2, 1] }}
@@ -311,7 +315,7 @@ const Chatbot: React.FC = () => {
                     <button
                       key={index}
                       onClick={() => setInputValue(action)}
-                      className="text-xs px-3 py-1 bg-white/10 hover:bg-white/20 text-white/80 rounded-full border border-white/20 transition-colors"
+                      className="text-xs px-3 py-1.5 bg-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/30 text-white/70 hover:text-cyan-400 rounded-full border border-white/10 transition-all duration-200"
                     >
                       {action}
                     </button>
@@ -331,12 +335,14 @@ const Chatbot: React.FC = () => {
                   onKeyPress={handleKeyPress}
                   placeholder="Type your message..."
                   disabled={isLoading}
-                  className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent text-sm disabled:opacity-50"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 text-sm disabled:opacity-50 transition-all"
                 />
                 <button
+                  type="button"
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim() || isLoading}
-                  className="w-10 h-10 bg-gradient-to-br from-accent-500 to-emerald-500 rounded-xl flex items-center justify-center text-white hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label="Send message"
+                  className="w-10 h-10 bg-cyan-500 hover:bg-cyan-400 rounded-xl flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                   <Send className="w-4 h-4" />
                 </button>

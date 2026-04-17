@@ -1,19 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Code, Heart, Briefcase, User } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import { Menu, X } from 'lucide-react';
 
 const Navigation: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const { mode, toggleMode, isProfessional } = useTheme();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -31,168 +27,93 @@ const Navigation: React.FC = () => {
   ];
 
   return (
-    <>
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/10 backdrop-blur-md border-b border-white/20'
-            : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Logo */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center space-x-2"
-            >
-              <Link to="/" className="flex items-center space-x-2 text-white">
-                <motion.img
-                  key={isProfessional ? 'prof-nav' : 'pers-nav'}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  src={isProfessional ? '/FaseenLogo.png' : '/FaseenPersonal.jpg'}
-                  alt="Mohamed Fasin"
-                  className={`w-8 h-8 ${isProfessional ? 'object-contain' : 'object-cover rounded-lg'}`}
-                />
-                <span className="font-semibold text-lg">Mohamed Fasin</span>
-              </Link>
-            </motion.div>
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-slate-900/90 backdrop-blur-md border-b border-white/10' : 'bg-transparent'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link to="/" className="flex items-center space-x-3 text-white">
+            <img src="/FaseenLogo.png" alt="Mohamed Fasin" className="w-8 h-8 object-contain" />
+            <span className="font-semibold text-lg tracking-tight">Mohamed Fasin</span>
+          </Link>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-6">
-              <div className="flex items-baseline space-x-8">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`relative px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                      location.pathname === item.path
-                        ? 'text-accent-400'
-                        : 'text-white/80 hover:text-white'
-                    }`}
-                  >
-                    {item.name}
-                    {location.pathname === item.path && (
-                      <motion.div
-                        className="absolute inset-0 bg-white/10 rounded-md -z-10"
-                        layoutId="activeTab"
-                        initial={false}
-                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                      />
-                    )}
-                  </Link>
-                ))}
-              </div>
-
-              {/* Mode Toggle Switch */}
-              <div className="flex items-center space-x-3">
-                <motion.div
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className="flex items-center space-x-2"
-                >
-                  <Briefcase className={`w-4 h-4 ${isProfessional ? 'text-accent-400' : 'text-white/40'}`} />
-                  <button
-                    onClick={toggleMode}
-                    className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
-                      isProfessional ? 'bg-accent-400/30 border-accent-400' : 'bg-pink-400/30 border-pink-400'
-                    } border-2`}
-                    title={isProfessional ? 'Switch to Personal Mode' : 'Switch to Professional Mode'}
-                  >
-                    <motion.div
-                      className={`absolute top-0.5 w-5 h-5 rounded-full ${
-                        isProfessional ? 'bg-accent-400' : 'bg-pink-400'
-                      } shadow-lg`}
-                      animate={{
-                        left: isProfessional ? '2px' : 'calc(100% - 22px)'
-                      }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 500,
-                        damping: 30
-                      }}
-                    />
-                  </button>
-                  <Heart className={`w-4 h-4 ${!isProfessional ? 'text-pink-400' : 'text-white/40'}`} />
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Mobile menu button */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-accent-400 focus:outline-none focus:ring-2 focus:ring-accent-400"
+          <div className="hidden md:flex items-center space-x-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className={`relative px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                  location.pathname === item.path
+                    ? 'text-cyan-400'
+                    : 'text-white/70 hover:text-white'
+                }`}
               >
-                {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white/10 backdrop-blur-md border-b border-white/20"
+                {item.name}
+                {location.pathname === item.path && (
+                  <motion.div
+                    className="absolute inset-0 bg-white/5 rounded-md -z-10"
+                    layoutId="activeTab"
+                    initial={false}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </Link>
+            ))}
+            <a
+              href="/contact"
+              className="ml-4 px-5 py-2 bg-cyan-500 hover:bg-cyan-400 text-white text-sm font-medium rounded-lg transition-colors duration-200"
             >
-              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.path}
-                    className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
-                      location.pathname === item.path
-                        ? 'text-accent-400 bg-white/10'
-                        : 'text-white/80 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                ))}
+              Hire Me
+            </a>
+          </div>
 
-                {/* Mobile Mode Toggle */}
-                <button
-                  onClick={toggleMode}
-                  className="w-full flex items-center justify-center space-x-2 px-3 py-2 mt-2 bg-white/10 rounded-md border border-white/20 hover:bg-white/15 transition-all duration-300"
-                >
-                  {isProfessional ? (
-                    <>
-                      <Briefcase className="w-4 h-4 text-accent-400" />
-                      <span className="text-sm text-white/80">Switch to Personal</span>
-                    </>
-                  ) : (
-                    <>
-                      <Heart className="w-4 h-4 text-pink-400" />
-                      <span className="text-sm text-white/80">Switch to Professional</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
-
-      {/* Heart icon for INFJ personality touch */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-        className="fixed bottom-6 right-6 z-40"
-      >
-        <div className="w-12 h-12 bg-gradient-to-br from-accent-400/20 to-emerald-400/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-          <Heart className="w-5 h-5 text-accent-400 animate-pulse-soft" />
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 rounded-md text-white/70 hover:text-white focus:outline-none"
+          >
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
-      </motion.div>
-    </>
+      </div>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-slate-900/95 backdrop-blur-md border-b border-white/10"
+          >
+            <div className="px-4 pt-2 pb-4 space-y-1">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`block px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    location.pathname === item.path
+                      ? 'text-cyan-400 bg-white/5'
+                      : 'text-white/70 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <Link
+                to="/contact"
+                className="block px-3 py-2 mt-2 bg-cyan-500 hover:bg-cyan-400 text-white text-sm font-medium rounded-lg text-center transition-colors duration-200"
+              >
+                Hire Me
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 };
 

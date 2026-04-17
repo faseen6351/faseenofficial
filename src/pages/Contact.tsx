@@ -1,71 +1,57 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, Linkedin, Github, Heart } from 'lucide-react';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  Linkedin,
+  Github,
+  Clock,
+  CheckCircle2,
+  Sparkles,
+  Zap,
+} from 'lucide-react';
 import PageWrapper from '../components/PageWrapper';
-import Card from '../components/Card';
-import Button from '../components/Button';
-import { useTheme } from '../context/ThemeContext';
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 const Contact: React.FC = () => {
-  const { isProfessional } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     projectType: '',
     message: '',
-    preferredContact: 'email',
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          projectType: formData.projectType,
-          message: formData.message,
-          preferredContact: formData.preferredContact,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const result = await response.json();
-      
       if (result.success) {
         setSubmitStatus('success');
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          projectType: '',
-          message: '',
-          preferredContact: 'email',
-        });
+        setFormData({ name: '', email: '', phone: '', projectType: '', message: '' });
       } else {
         throw new Error(result.message || 'Failed to send message');
       }
-    } catch (error) {
-      console.error('Contact form error:', error);
+    } catch {
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -76,19 +62,19 @@ const Contact: React.FC = () => {
   const contactInfo = [
     {
       icon: Mail,
-      title: 'Email',
+      label: 'Email',
       value: 'faseenofficial@gmail.com',
       link: 'mailto:faseenofficial@gmail.com',
     },
     {
       icon: Phone,
-      title: 'Phone',
+      label: 'Phone · WhatsApp',
       value: '+971 50 983 8149',
       link: 'tel:+971509838149',
     },
     {
       icon: MapPin,
-      title: 'Location',
+      label: 'Location',
       value: 'Abu Dhabi, UAE',
       link: '#',
     },
@@ -99,313 +85,332 @@ const Contact: React.FC = () => {
       icon: Linkedin,
       name: 'LinkedIn',
       url: 'https://linkedin.com/in/mohamed-fasin',
-      color: 'hover:text-blue-400',
+      label: 'linkedin.com/in/mohamed-fasin',
     },
     {
       icon: Github,
       name: 'GitHub',
       url: 'https://github.com/mohamed-fasin',
-      color: 'hover:text-gray-400',
+      label: 'github.com/mohamed-fasin',
     },
     {
       icon: Mail,
       name: 'Email',
       url: 'mailto:faseenofficial@gmail.com',
-      color: 'hover:text-accent-400',
+      label: 'faseenofficial@gmail.com',
     },
   ];
 
   const projectTypes = [
-    'Web Application',
-    'Mobile App',
-    '3D/Interactive Experience',
-    'AI/ML Solution',
-    'Consulting',
+    'AI / LLM Product',
+    'Prompt Engineering Consulting',
+    'Flutter Mobile App (iOS/Android)',
+    'Full-Stack Web Application',
+    'IoT · Raspberry Pi · Arduino',
+    'Automation & Workflow Systems',
+    'Full-Time Role',
     'Other',
   ];
 
+  const inputClass =
+    'w-full px-4 py-3 bg-white/[0.04] border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-400/50 hover:border-white/20 transition-all text-sm';
+
+  const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    show: (i: number = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, delay: i * 0.08, ease: EASE },
+    }),
+  };
+
   return (
     <PageWrapper>
-      {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto text-center">
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <motion.div
+          animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-20 -left-32 w-[28rem] h-[28rem] rounded-full bg-cyan-500/10 blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 0], y: [0, 20, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-0 right-0 w-[28rem] h-[28rem] rounded-full bg-blue-500/10 blur-3xl"
+        />
+      </div>
+
+      <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
           <motion.div
-            key={isProfessional ? 'prof-contact' : 'pers-contact'}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="text-center mb-14"
           >
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-              Let's{' '}
-              <span className={`bg-gradient-to-r ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} bg-clip-text text-transparent`}>
-                Connect
+            <motion.div
+              variants={fadeUp}
+              custom={0}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs font-medium tracking-wide mb-6"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Available for new work · 2026</span>
+            </motion.div>
+
+            <motion.h1
+              variants={fadeUp}
+              custom={1}
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 text-balance"
+            >
+              Let's build{' '}
+              <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                something real
               </span>
-            </h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              {isProfessional
-                ? "I'm always excited to collaborate on meaningful projects and connect with fellow developers, designers, and innovators. Let's create something amazing together."
-                : "I'm always eager to meet new people, share languages and cultures, and build genuine friendships. Let's connect and create meaningful bonds together."
-              }
-            </p>
+            </motion.h1>
+
+            <motion.p
+              variants={fadeUp}
+              custom={2}
+              className="text-base sm:text-lg text-white/55 max-w-2xl mx-auto leading-relaxed"
+            >
+              Open to full-time roles, freelance engagements, and AI consulting. I reply within 24 hours — usually faster.
+            </motion.p>
           </motion.div>
+
+          <div className="grid lg:grid-cols-5 gap-8">
+            {/* Form */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
+              className="lg:col-span-3"
+            >
+              <div className="relative p-8 bg-white/[0.03] border border-white/10 rounded-3xl overflow-hidden">
+                <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+
+                <div className="relative">
+                  <h2 className="text-xl font-semibold text-white mb-1">Send a message</h2>
+                  <p className="text-white/45 text-sm mb-6">
+                    Share the shape of the project and I'll follow up with next steps.
+                  </p>
+
+                  <form onSubmit={handleSubmit} className="space-y-5">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="name" className="block text-xs uppercase tracking-wider text-white/45 mb-1.5">
+                          Name *
+                        </label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          required
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          placeholder="Your name"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="email" className="block text-xs uppercase tracking-wider text-white/45 mb-1.5">
+                          Email *
+                        </label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          required
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder="your@email.com"
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="phone" className="block text-xs uppercase tracking-wider text-white/45 mb-1.5">
+                          Phone (Optional)
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder="+971 XX XXX XXXX"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="projectType" className="block text-xs uppercase tracking-wider text-white/45 mb-1.5">
+                          Project Type
+                        </label>
+                        <select
+                          id="projectType"
+                          name="projectType"
+                          value={formData.projectType}
+                          onChange={handleInputChange}
+                          className={inputClass}
+                        >
+                          <option value="" className="bg-slate-900">
+                            Select type
+                          </option>
+                          {projectTypes.map((type) => (
+                            <option key={type} value={type} className="bg-slate-900">
+                              {type}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="message" className="block text-xs uppercase tracking-wider text-white/45 mb-1.5">
+                        Message *
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        required
+                        rows={5}
+                        value={formData.message}
+                        onChange={handleInputChange}
+                        placeholder="Describe your project, goals, or role. The more context, the better."
+                        className={`${inputClass} resize-none`}
+                      />
+                    </div>
+
+                    <motion.button
+                      type="submit"
+                      disabled={isSubmitting}
+                      whileHover={{ y: isSubmitting ? 0 : -1 }}
+                      whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
+                      className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 transition-all duration-200"
+                    >
+                      <Send className="w-4 h-4" />
+                      {isSubmitting ? 'Sending…' : 'Send Message'}
+                    </motion.button>
+
+                    {submitStatus === 'success' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="flex items-center gap-2 p-4 bg-emerald-500/10 border border-emerald-400/30 rounded-xl text-emerald-300 text-sm"
+                      >
+                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+                        Message sent. I'll reply within 24 hours.
+                      </motion.div>
+                    )}
+
+                    {submitStatus === 'error' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 bg-red-500/10 border border-red-400/30 rounded-xl text-red-300 text-sm"
+                      >
+                        Something went wrong. Please try again or email me directly.
+                      </motion.div>
+                    )}
+                  </form>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Info column */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.25, ease: EASE }}
+              className="lg:col-span-2 space-y-5"
+            >
+              {/* Contact Info */}
+              <div className="p-6 bg-white/[0.03] border border-white/10 rounded-3xl">
+                <h3 className="text-sm font-semibold text-white/90 uppercase tracking-[0.16em] mb-5">
+                  Contact
+                </h3>
+                <div className="space-y-4">
+                  {contactInfo.map((info) => (
+                    <a
+                      key={info.label}
+                      href={info.link}
+                      className="flex items-center gap-4 group"
+                    >
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/15 to-blue-500/15 border border-cyan-400/20 flex items-center justify-center flex-shrink-0 group-hover:border-cyan-400/40 transition-colors">
+                        <info.icon className="w-4.5 h-4.5 text-cyan-300" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-white/40 text-[11px] uppercase tracking-wider mb-0.5">
+                          {info.label}
+                        </div>
+                        <div className="text-white/85 group-hover:text-cyan-300 transition-colors text-sm truncate">
+                          {info.value}
+                        </div>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Social */}
+              <div className="p-6 bg-white/[0.03] border border-white/10 rounded-3xl">
+                <h3 className="text-sm font-semibold text-white/90 uppercase tracking-[0.16em] mb-5">
+                  Online
+                </h3>
+                <div className="space-y-2.5">
+                  {socialLinks.map((social) => (
+                    <motion.a
+                      key={social.name}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ x: 2 }}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/30 transition-colors duration-200 group"
+                    >
+                      <social.icon className="w-4.5 h-4.5 text-white/50 group-hover:text-cyan-300 transition-colors" />
+                      <div className="min-w-0 flex-1">
+                        <div className="text-white/85 text-sm font-medium">{social.name}</div>
+                        <div className="text-white/40 text-[11px] truncate">{social.label}</div>
+                      </div>
+                    </motion.a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Availability */}
+              <div className="relative p-6 bg-gradient-to-br from-cyan-500/[0.06] to-blue-500/[0.04] border border-cyan-400/20 rounded-3xl overflow-hidden">
+                <div className="absolute -top-16 -right-16 w-40 h-40 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+                <h3 className="relative text-sm font-semibold text-white/90 uppercase tracking-[0.16em] mb-4 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-cyan-300" />
+                  Availability
+                </h3>
+                <div className="relative space-y-3 text-sm">
+                  <div className="flex items-center gap-2.5">
+                    <span className="relative flex w-2 h-2">
+                      <span className="absolute inline-flex w-full h-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                      <span className="relative inline-flex w-2 h-2 rounded-full bg-emerald-400" />
+                    </span>
+                    <span className="text-white/80">Open to new projects & roles</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                    <span className="text-white/80">Own UAE Visa Holder</span>
+                  </div>
+                  <div className="pt-2 space-y-1.5 text-white/50 text-[12.5px]">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-3.5 h-3.5" />
+                      Responds within 24 hours
+                    </div>
+                    <div>Time zone · UAE Standard (UTC+4)</div>
+                    <div>Origin · Kerala, Thrissur, India</div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
-
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Card>
-              <h2 className="text-2xl font-bold text-white mb-6">Send me a message</h2>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">
-                      Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      required
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
-                      placeholder="Your name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      required
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
-                      placeholder="your@email.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-2">
-                      Phone (Optional)
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
-                      placeholder="+94 XX XXX XXXX"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="projectType" className="block text-sm font-medium text-white/80 mb-2">
-                      Project Type
-                    </label>
-                    <select
-                      id="projectType"
-                      name="projectType"
-                      value={formData.projectType}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all"
-                    >
-                      <option value="" className="bg-gray-800">Select a type</option>
-                      {projectTypes.map((type) => (
-                        <option key={type} value={type} className="bg-gray-800">
-                          {type}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows={5}
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent-400 focus:border-transparent transition-all resize-none"
-                    placeholder="Tell me about your project or just say hello..."
-                  />
-                  <div className="text-right text-sm text-white/50 mt-1">
-                    {formData.message.length}/500
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-white/80 mb-2">
-                    Preferred Contact Method
-                  </label>
-                  <div className="flex space-x-4">
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="preferredContact"
-                        value="email"
-                        checked={formData.preferredContact === 'email'}
-                        onChange={handleInputChange}
-                        className="mr-2 text-accent-400"
-                      />
-                      <span className="text-white/80">Email</span>
-                    </label>
-                    <label className="flex items-center">
-                      <input
-                        type="radio"
-                        name="preferredContact"
-                        value="phone"
-                        checked={formData.preferredContact === 'phone'}
-                        onChange={handleInputChange}
-                        className="mr-2 text-accent-400"
-                      />
-                      <span className="text-white/80">Phone</span>
-                    </label>
-                  </div>
-                </div>
-
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="w-full"
-                  icon={Send}
-                >
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                </Button>
-
-                {submitStatus === 'success' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-emerald-500/20 border border-emerald-500/30 rounded-lg p-4 text-emerald-300"
-                  >
-                    Thank you for your message! I'll get back to you within 24 hours.
-                  </motion.div>
-                )}
-
-                {submitStatus === 'error' && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="bg-red-500/20 border border-red-500/30 rounded-lg p-4 text-red-300"
-                  >
-                    Sorry, there was an error sending your message. Please try again.
-                  </motion.div>
-                )}
-              </form>
-            </Card>
-          </motion.div>
-
-          {/* Contact Information */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="space-y-8"
-          >
-            {/* Contact Info */}
-            <Card>
-              <h3 className="text-xl font-semibold text-white mb-6">Get in Touch</h3>
-              <div className="space-y-4">
-                {contactInfo.map((info) => (
-                  <div key={info.title} className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-accent-400/20 to-emerald-400/20 rounded-lg flex items-center justify-center">
-                      <info.icon className="w-6 h-6 text-accent-400" />
-                    </div>
-                    <div>
-                      <div className="text-white/60 text-sm">{info.title}</div>
-                      <a
-                        href={info.link}
-                        className="text-white hover:text-accent-400 transition-colors"
-                      >
-                        {info.value}
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </Card>
-
-            {/* Social Links */}
-            <Card>
-              <h3 className="text-xl font-semibold text-white mb-6">Connect Online</h3>
-              <div className="flex space-x-4">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.name}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center text-white/70 transition-all hover:bg-white/20 ${social.color}`}
-                  >
-                    <social.icon className="w-6 h-6" />
-                  </a>
-                ))}
-              </div>
-            </Card>
-
-            {/* Availability */}
-            <Card>
-              <h3 className="text-xl font-semibold text-white mb-4">Current Availability</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-                  <span className="text-white/80">Available for new projects</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-                  <span className="text-white/80">Own Visa Holder</span>
-                </div>
-                <div className="text-white/60 text-sm">
-                  <strong>Response Time:</strong> Within 24 hours
-                </div>
-                <div className="text-white/60 text-sm">
-                  <strong>Time Zone:</strong> UAE Standard Time (UTC+4)
-                </div>
-                <div className="text-white/60 text-sm">
-                  <strong>Location:</strong> Abu Dhabi, UAE
-                </div>
-                <div className="text-white/60 text-sm">
-                  <strong>Origin:</strong> Kerala, Thrissur, India
-                </div>
-              </div>
-            </Card>
-
-            {/* Personal Touch */}
-            <Card key={isProfessional ? 'prof-quote' : 'pers-quote'}>
-              <div className="text-center">
-                <Heart className={`w-8 h-8 ${isProfessional ? 'text-accent-400' : 'text-pink-400'} mx-auto mb-4`} />
-                <p className="text-white/80 text-sm">
-                  {isProfessional
-                    ? '"I believe every great project starts with a meaningful conversation. Let\'s discuss how we can bring your vision to life with empathy and innovation."'
-                    : '"Every meaningful connection begins with genuine conversation and mutual understanding. I\'d love to hear your story and share mine."'
-                  }
-                </p>
-                <p className="text-white/60 text-xs mt-2">- Mohamed Fasin</p>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
-      </div>
     </PageWrapper>
   );
 };

@@ -21,7 +21,7 @@ const Card: React.FC<CardProps> = ({
       viewport={{ once: true, margin: "-50px" }}
       transition={{ delay, duration: 0.6, type: "spring", stiffness: 100 }}
       whileHover={hover ? { y: -8, scale: 1.02, transition: { duration: 0.3 } } : {}}
-      className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg hover:shadow-xl hover:border-white/30 transition-all duration-300 ${className}`}
+      className={`bg-white/5 border border-white/10 rounded-2xl p-6 hover:border-white/20 transition-all duration-300 ${className}`}
     >
       {children}
     </motion.div>

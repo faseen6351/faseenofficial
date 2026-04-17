@@ -1,362 +1,501 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ExternalLink, Github, Eye, Filter, Heart, Users, Languages, Brain } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Apple,
+  Smartphone,
+  Globe,
+  CheckCircle2,
+  Brain,
+  Bot,
+  Sparkles,
+  ArrowRight,
+  Cpu,
+  Layers,
+  Code2,
+} from 'lucide-react';
 import PageWrapper from '../components/PageWrapper';
-import Card from '../components/Card';
-import Button from '../components/Button';
-import { useTheme } from '../context/ThemeContext';
+import { Link } from 'react-router-dom';
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+type Category = 'all' | 'mobile' | 'web' | 'ai' | 'fullstack';
+
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  category: Exclude<Category, 'all'>;
+  badge: string;
+  badgeColor: string;
+  technologies: string[];
+  storeLabel?: string;
+  storeIcon?: typeof Apple;
+  featured: boolean;
+  achievement: string;
+  year: string;
+}
 
 const Projects: React.FC = () => {
-  const { isProfessional } = useTheme();
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState<Category>('all');
 
-  const professionalFilters = [
-    { id: 'all', name: 'All Projects' },
-    { id: 'web', name: 'Web Apps' },
-    { id: '3d', name: '3D Projects' },
-    { id: 'mobile', name: 'Mobile Apps' },
-    { id: 'ai', name: 'AI/ML' },
+  const filters: { id: Category; name: string; icon: typeof Layers }[] = [
+    { id: 'all', name: 'All Work', icon: Layers },
+    { id: 'mobile', name: 'Flutter · Mobile', icon: Smartphone },
+    { id: 'web', name: 'Web Apps', icon: Globe },
+    { id: 'ai', name: 'AI Engineering', icon: Brain },
+    { id: 'fullstack', name: 'Full-Stack', icon: Code2 },
   ];
 
-  const personalFilters = [
-    { id: 'all', name: 'All Experiences' },
-    { id: 'languages', name: 'Languages' },
-    { id: 'connections', name: 'Connections' },
-    { id: 'community', name: 'Community' },
-  ];
-
-  const filters = isProfessional ? professionalFilters : personalFilters;
-
-  const professionalProjects = [
+  const projects: Project[] = [
     {
       id: 1,
-      title: 'Interactive 3D Portfolio',
-      description: 'An immersive 3D portfolio website built with Three.js, featuring interactive elements and smooth animations that showcase projects in a unique spatial environment.',
-      category: '3d',
-      image: 'https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Three.js', 'React', 'TypeScript', 'GLSL'],
-      demoUrl: '#',
-      githubUrl: '#',
-      featured: true,
-    },
-    {
-      id: 2,
-      title: 'AI-Powered Analytics Dashboard',
-      description: 'A comprehensive analytics platform that uses machine learning to provide actionable insights from complex datasets, featuring real-time data visualization.',
-      category: 'ai',
-      image: 'https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Python', 'TensorFlow', 'React', 'D3.js'],
-      demoUrl: '#',
-      githubUrl: '#',
-      featured: true,
-    },
-    {
-      id: 3,
-      title: 'Flutter E-Commerce App',
-      description: 'A full-featured e-commerce mobile application with elegant UI/UX, secure payment integration, and real-time inventory management.',
+      title: 'Absons Business Suite — iOS',
+      description:
+        'Flagship iOS application built with Flutter for Absons IT Solutions. Covers business workflows, client management, and real-time sync — designed, engineered, and shipped end-to-end to the Apple App Store.',
       category: 'mobile',
-      image: 'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Flutter', 'Dart', 'Firebase', 'Stripe'],
-      demoUrl: '#',
-      githubUrl: '#',
-      featured: false,
-    },
-    {
-      id: 4,
-      title: 'Enterprise Web Application',
-      description: 'A scalable enterprise solution for project management with advanced features like real-time collaboration, automated reporting, and role-based access control.',
-      category: 'web',
-      image: 'https://images.pexels.com/photos/3184325/pexels-photo-3184325.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['React', 'Node.js', 'PostgreSQL', 'Docker'],
-      demoUrl: '#',
-      githubUrl: '#',
-      featured: false,
-    },
-    {
-      id: 5,
-      title: 'AR Visualization Tool',
-      description: 'An augmented reality application for architectural visualization, allowing users to view 3D models in real-world environments using their mobile devices.',
-      category: '3d',
-      image: 'https://images.pexels.com/photos/3861958/pexels-photo-3861958.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Unity', 'ARCore', 'C#', 'Blender'],
-      demoUrl: '#',
-      githubUrl: '#',
-      featured: false,
-    },
-    {
-      id: 6,
-      title: 'Smart Home Dashboard',
-      description: 'An IoT dashboard for smart home management with voice control, automated scheduling, and energy consumption monitoring.',
-      category: 'web',
-      image: 'https://images.pexels.com/photos/1329299/pexels-photo-1329299.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['React', 'Node.js', 'MQTT', 'MongoDB'],
-      demoUrl: '#',
-      githubUrl: '#',
-      featured: false,
-    },
-  ];
-
-  const personalProjects = [
-    {
-      id: 1,
-      title: 'Multilingual Community Building',
-      description: 'Created meaningful connections across 7+ languages, helping people from diverse backgrounds understand each other and build lasting friendships.',
-      category: 'languages',
-      image: 'https://images.pexels.com/photos/1543895/pexels-photo-1543895.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['English', 'Tamil', 'Arabic', 'Spanish', 'French'],
+      badge: 'Published · App Store',
+      badgeColor: 'bg-white/5 border-white/20 text-white',
+      technologies: ['Flutter', 'Dart', 'Firebase', 'REST APIs', 'iOS'],
+      storeLabel: 'App Store',
+      storeIcon: Apple,
       featured: true,
+      achievement: 'Full lifecycle — architecture to App Store review',
+      year: '2025',
     },
     {
       id: 2,
-      title: 'Cross-Cultural Connection Hub',
-      description: 'Facilitated deep emotional connections between individuals from different cultural backgrounds through empathy, active listening, and genuine understanding.',
-      category: 'connections',
-      image: 'https://images.pexels.com/photos/1157557/pexels-photo-1157557.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Empathy', 'Cultural Awareness', 'Active Listening', 'Trust Building'],
+      title: 'Absons Business Suite — Android',
+      description:
+        'Cross-platform Android release built from the same Flutter codebase with platform-specific tuning. Published on Google Play with phased rollout, analytics, and active production users.',
+      category: 'mobile',
+      badge: 'Published · Google Play',
+      badgeColor: 'bg-emerald-500/10 border-emerald-400/30 text-emerald-300',
+      technologies: ['Flutter', 'Dart', 'Firebase', 'Play Console', 'Android'],
+      storeLabel: 'Google Play',
+      storeIcon: Smartphone,
       featured: true,
+      achievement: 'Single Flutter codebase · dual-store publication',
+      year: '2025',
     },
     {
       id: 3,
-      title: 'Language Exchange Network',
-      description: 'Built a network of language learners and native speakers, creating spaces for authentic cultural exchange and mutual learning.',
-      category: 'languages',
-      image: 'https://images.pexels.com/photos/267669/pexels-photo-267669.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Language Teaching', 'Cultural Exchange', 'Mentorship'],
-      featured: false,
+      title: 'Absons Web Application',
+      description:
+        'Full-stack web platform powering the Absons ecosystem. Admin dashboard, client portals, realtime updates, and a clean API layer — deployed and running in production.',
+      category: 'web',
+      badge: 'Live · Production',
+      badgeColor: 'bg-cyan-500/10 border-cyan-400/30 text-cyan-300',
+      technologies: ['React', 'TypeScript', 'Node.js', 'MongoDB', 'Tailwind'],
+      storeLabel: 'Live App',
+      storeIcon: Globe,
+      featured: true,
+      achievement: 'Frontend · Backend · Deployment — delivered end-to-end',
+      year: '2025',
     },
     {
       id: 4,
-      title: 'Emotional Support Community',
-      description: 'Provided compassionate support and understanding to individuals navigating life challenges through deep empathy and non-judgmental listening.',
-      category: 'community',
-      image: 'https://images.pexels.com/photos/1595385/pexels-photo-1595385.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Empathetic Listening', 'Emotional Intelligence', 'Support', 'Understanding'],
+      title: 'AI Assistant · Elly',
+      description:
+        'A production-grade AI assistant embedded in this portfolio — built with carefully engineered system prompts, intent routing, conversational memory, and a typed service layer over modern LLM APIs.',
+      category: 'ai',
+      badge: 'Live · AI Feature',
+      badgeColor: 'bg-violet-500/10 border-violet-400/30 text-violet-300',
+      technologies: ['TypeScript', 'LLM APIs', 'Prompt Engineering', 'React'],
       featured: false,
+      achievement: 'Custom prompt architecture with intent routing',
+      year: '2026',
     },
     {
       id: 5,
-      title: 'Cultural Bridge Ambassador',
-      description: 'Served as a cultural ambassador, helping people from different backgrounds appreciate and understand each other\'s perspectives and traditions.',
-      category: 'connections',
-      image: 'https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Cultural Sensitivity', 'Intercultural Communication', 'Perspective Taking'],
+      title: 'RAG Knowledge Assistant',
+      description:
+        'Retrieval-augmented assistant over private knowledge bases. Chunking, embeddings, hybrid search, and reranking — delivered as a clean API and embeddable chat UI.',
+      category: 'ai',
+      badge: 'AI Engineering',
+      badgeColor: 'bg-purple-500/10 border-purple-400/30 text-purple-300',
+      technologies: ['Python', 'FastAPI', 'pgvector', 'LangChain', 'OpenAI'],
       featured: false,
+      achievement: 'Hybrid search + reranking for grounded answers',
+      year: '2026',
     },
     {
       id: 6,
-      title: 'Meaningful Conversation Spaces',
-      description: 'Created safe spaces for deep, authentic conversations where people feel heard, valued, and understood without judgment.',
-      category: 'community',
-      image: 'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=600',
-      technologies: ['Deep Listening', 'Vulnerability', 'Authenticity', 'Trust'],
+      title: 'Python Automation Suite',
+      description:
+        'Business-critical automation — ETL, reporting, scraping with Selenium, and scheduled pipelines. Replaces hours of manual ops with reliable, observable scripts.',
+      category: 'ai',
+      badge: 'Internal Tooling',
+      badgeColor: 'bg-emerald-500/10 border-emerald-400/30 text-emerald-300',
+      technologies: ['Python', 'Selenium', 'Pandas', 'FastAPI', 'Cron'],
       featured: false,
+      achievement: '80%+ reduction in recurring manual work',
+      year: '2024',
+    },
+    {
+      id: 7,
+      title: 'Enterprise Collaboration Platform',
+      description:
+        'Scalable full-stack web app with realtime collaboration, role-based access, automated reporting, and audit trails for distributed teams.',
+      category: 'fullstack',
+      badge: 'Case Study',
+      badgeColor: 'bg-blue-500/10 border-blue-400/30 text-blue-300',
+      technologies: ['React', 'Node.js', 'PostgreSQL', 'Docker', 'Redis'],
+      featured: false,
+      achievement: 'Realtime multi-user collaboration engine',
+      year: '2024',
+    },
+    {
+      id: 8,
+      title: 'Flutter E-Commerce App',
+      description:
+        'Production-style Flutter e-commerce build — elegant UI, Stripe payments, inventory sync, and push notifications. Showcase of end-to-end mobile product delivery.',
+      category: 'mobile',
+      badge: 'Case Study',
+      badgeColor: 'bg-amber-500/10 border-amber-400/30 text-amber-300',
+      technologies: ['Flutter', 'Dart', 'Firebase', 'Stripe', 'Riverpod'],
+      featured: false,
+      achievement: 'Full payment + inventory flow in Flutter',
+      year: '2024',
+    },
+    {
+      id: 9,
+      title: 'Prompt Engineering Playbook',
+      description:
+        'An internal evaluation harness for LLM prompts — structured templates, test suites, regression runs, and cost/quality tracking across model vendors.',
+      category: 'ai',
+      badge: 'Tooling',
+      badgeColor: 'bg-cyan-500/10 border-cyan-400/30 text-cyan-300',
+      technologies: ['TypeScript', 'Evals', 'OpenAI', 'Claude', 'Gemini'],
+      featured: false,
+      achievement: 'Systematic prompt design and regression testing',
+      year: '2026',
     },
   ];
 
-  const projects = isProfessional ? professionalProjects : personalProjects;
+  const filteredProjects =
+    activeFilter === 'all'
+      ? projects
+      : projects.filter((p) => p.category === activeFilter);
 
-  const filteredProjects = activeFilter === 'all' 
-    ? projects 
-    : projects.filter(project => project.category === activeFilter);
+  const featuredProjects = projects.filter((p) => p.featured);
 
-  const featuredProjects = projects.filter(project => project.featured);
-
-  const ProjectCard: React.FC<{ project: any; index: number; featured?: boolean }> = ({ 
-    project, 
-    index, 
-    featured = false 
-  }) => (
-    <Card delay={index * 0.1} className={`group ${featured ? 'md:col-span-2' : ''}`}>
-      <div className="relative overflow-hidden rounded-lg mb-4">
-        <img
-          src={project.image}
-          alt={project.title}
-          className={`w-full object-cover transition-transform duration-300 group-hover:scale-110 ${
-            featured ? 'h-64' : 'h-48'
-          }`}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="flex space-x-2">
-            <Button size="sm" className="bg-white/20 hover:bg-white/30">
-              <Eye className="w-4 h-4 mr-1" />
-              Demo
-            </Button>
-            <Button size="sm" variant="outline" className="border-white/30 hover:bg-white/10">
-              <Github className="w-4 h-4 mr-1" />
-              Code
-            </Button>
-          </div>
-        </div>
-      </div>
-      
-      <h3 className={`font-semibold text-white mb-2 ${featured ? 'text-2xl' : 'text-xl'}`}>
-        {project.title}
-      </h3>
-      
-      <p className={`text-white/70 mb-4 ${featured ? 'text-base' : 'text-sm'}`}>
-        {project.description}
-      </p>
-      
-      <div className="flex flex-wrap gap-2 mb-4">
-        {project.technologies.map((tech: string) => (
-          <span
-            key={tech}
-            className="px-2 py-1 bg-white/10 text-white/80 rounded-md text-xs"
-          >
-            {tech}
-          </span>
-        ))}
-      </div>
-      
-      <div className="flex justify-between items-center">
-        <div className="flex space-x-2">
-          <a
-            href={project.demoUrl}
-            className="text-accent-400 hover:text-accent-300 transition-colors"
-          >
-            <ExternalLink className="w-5 h-5" />
-          </a>
-          <a
-            href={project.githubUrl}
-            className="text-white/60 hover:text-white transition-colors"
-          >
-            <Github className="w-5 h-5" />
-          </a>
-        </div>
-        <span className="text-xs text-white/40 capitalize">{project.category}</span>
-      </div>
-    </Card>
-  );
+  const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    show: (i: number = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, delay: i * 0.06, ease: EASE },
+    }),
+  };
 
   return (
     <PageWrapper>
-      {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <motion.div
+          animate={{ x: [0, 30, 0], y: [0, -15, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-20 -left-32 w-[28rem] h-[28rem] rounded-full bg-cyan-500/10 blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, -20, 0], y: [0, 20, 0] }}
+          transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-0 right-0 w-[30rem] h-[30rem] rounded-full bg-violet-500/10 blur-3xl"
+        />
+      </div>
+
+      {/* Hero */}
+      <section className="pt-24 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
           <motion.div
-            key={isProfessional ? 'prof-hero' : 'pers-hero'}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs font-medium tracking-wide mb-6"
           >
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-              {isProfessional ? 'Featured ' : 'Meaningful '}
-              <span className={`bg-gradient-to-r ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} bg-clip-text text-transparent`}>
-                {isProfessional ? 'Projects' : 'Experiences'}
-              </span>
-            </h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              {isProfessional
-                ? 'A showcase of my passion projects, professional work, and experimental creations that demonstrate my technical expertise and creative problem-solving'
-                : 'A collection of meaningful connections, cultural bridges, and deep relationships built through empathy, language, and genuine understanding'
-              }
-            </p>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Shipped Work · 2026</span>
           </motion.div>
+
+          <motion.h1
+            custom={1}
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 text-balance"
+          >
+            Published &{' '}
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              production projects
+            </span>
+          </motion.h1>
+
+          <motion.p
+            custom={2}
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="text-base sm:text-lg text-white/55 max-w-3xl mx-auto leading-relaxed"
+          >
+            Flutter apps live on the App Store and Google Play, web apps in production, and AI systems designed with careful prompt engineering. Real software that real people use.
+          </motion.p>
         </div>
       </section>
 
-      {/* Featured Projects */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8">
+      {/* Featured: Published Apps */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-20">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            key={isProfessional ? 'prof-featured' : 'pers-featured'}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="flex items-center gap-3 mb-8"
           >
-            <h2 className="text-3xl font-bold text-white mb-4">
-              {isProfessional ? 'Featured Work' : 'Core Experiences'}
-            </h2>
-            <p className="text-white/70">
-              {isProfessional
-                ? 'My most impactful and innovative projects'
-                : 'My most meaningful connections and cultural contributions'
-              }
-            </p>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/15 to-blue-500/15 border border-cyan-400/20 flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5 text-cyan-300" />
+            </div>
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white">
+                Flagship · Published & Live
+              </h2>
+              <p className="text-white/50 text-sm mt-0.5">
+                iOS · Android · Web — shipped end-to-end for Absons IT Solutions
+              </p>
+            </div>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
+          <div className="grid md:grid-cols-3 gap-5">
             {featuredProjects.map((project, index) => (
-              <ProjectCard key={project.id} project={project} index={index} featured />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Filter Section */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            <Filter className="w-5 h-5 text-white/60 mr-2 mt-2" />
-            {filters.map((filter) => (
-              <motion.button
-                key={filter.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveFilter(filter.id)}
-                className={`px-6 py-2 rounded-full transition-all duration-300 ${
-                  activeFilter === filter.id
-                    ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-lg'
-                    : 'bg-white/10 text-white/80 hover:bg-white/20'
-                }`}
+              <motion.article
+                key={project.id}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-60px' }}
+                transition={{ duration: 0.6, delay: index * 0.08, ease: EASE }}
+                whileHover={{ y: -4 }}
+                className="group relative bg-white/[0.03] border border-white/10 hover:border-cyan-400/40 rounded-2xl p-6 transition-colors duration-300 flex flex-col overflow-hidden"
               >
-                {filter.name}
-              </motion.button>
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/0 via-cyan-500/0 to-blue-500/0 group-hover:from-cyan-500/5 group-hover:to-blue-500/5 transition-all duration-500 pointer-events-none" />
+
+                <div className="relative flex items-start justify-between mb-5">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/15 to-blue-500/15 border border-cyan-400/20 flex items-center justify-center">
+                    {project.storeIcon && (
+                      <project.storeIcon className="w-5 h-5 text-cyan-300" />
+                    )}
+                  </div>
+                  <span
+                    className={`px-2.5 py-1 text-[11px] font-medium rounded-full border ${project.badgeColor}`}
+                  >
+                    {project.badge}
+                  </span>
+                </div>
+
+                <div className="relative flex-grow">
+                  <div className="flex items-center gap-2 mb-2 text-white/40 text-[11px] uppercase tracking-[0.14em]">
+                    <span>{project.year}</span>
+                    <span className="w-1 h-1 rounded-full bg-white/30" />
+                    <span className="capitalize">{project.category}</span>
+                  </div>
+
+                  <h3 className="text-lg font-semibold text-white mb-2.5 leading-snug">
+                    {project.title}
+                  </h3>
+                  <p className="text-white/55 text-sm leading-relaxed mb-5">
+                    {project.description}
+                  </p>
+                </div>
+
+                <div className="relative p-3 rounded-xl bg-cyan-500/5 border border-cyan-400/20 mb-4">
+                  <p className="text-cyan-200 text-xs font-medium leading-snug">
+                    {project.achievement}
+                  </p>
+                </div>
+
+                <div className="relative flex flex-wrap gap-1.5">
+                  {project.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-2 py-0.5 rounded-md text-[10.5px] font-medium bg-white/[0.04] border border-white/10 text-white/55"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </motion.article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* All Projects Grid */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8">
+      {/* All Projects */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-20 border-t border-white/5 pt-16">
         <div className="max-w-6xl mx-auto">
           <motion.div
-            layout
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-10"
           >
-            {filteredProjects.map((project, index) => (
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1.5">
+                Complete portfolio
+              </h2>
+              <p className="text-white/50 text-sm">
+                Filter by discipline to see how the pieces fit together.
+              </p>
+            </div>
+          </motion.div>
+
+          <div className="flex flex-wrap gap-2.5 mb-10">
+            {filters.map((filter) => {
+              const active = activeFilter === filter.id;
+              return (
+                <motion.button
+                  key={filter.id}
+                  type="button"
+                  whileHover={{ y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setActiveFilter(filter.id)}
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
+                    active
+                      ? 'text-white'
+                      : 'text-white/55 hover:text-white border border-white/10 hover:border-white/20 bg-white/[0.03]'
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="projects-active-pill"
+                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20"
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  <filter.icon className="w-4 h-4 relative z-10" />
+                  <span className="relative z-10">{filter.name}</span>
+                </motion.button>
+              );
+            })}
+          </div>
+
+          <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <AnimatePresence mode="popLayout">
+              {filteredProjects.map((project, index) => (
+                <motion.article
+                  key={project.id}
+                  layout
+                  initial={{ opacity: 0, y: 20, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.97 }}
+                  transition={{ duration: 0.45, delay: index * 0.04, ease: EASE }}
+                  whileHover={{ y: -4 }}
+                  className="group relative bg-white/[0.03] border border-white/10 hover:border-cyan-400/30 rounded-2xl p-5 flex flex-col transition-colors duration-300 overflow-hidden"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <span
+                      className={`px-2 py-0.5 text-[11px] font-medium rounded-full border ${project.badgeColor}`}
+                    >
+                      {project.badge}
+                    </span>
+                    <span className="text-white/35 text-[11px] tabular-nums">
+                      {project.year}
+                    </span>
+                  </div>
+
+                  <h3 className="text-base font-semibold text-white mb-2 leading-snug">
+                    {project.title}
+                  </h3>
+                  <p className="text-white/50 text-sm leading-relaxed mb-4 flex-grow">
+                    {project.description}
+                  </p>
+
+                  <p className="text-cyan-300/80 text-[11.5px] mb-4 italic leading-snug">
+                    {project.achievement}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {project.technologies.map((tech) => (
+                      <span
+                        key={tech}
+                        className="px-2 py-0.5 rounded-md text-[10.5px] font-medium bg-white/[0.04] border border-white/10 text-white/55"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </motion.article>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Capabilities strip */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-16">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4"
+          >
+            {[
+              { icon: Smartphone, label: 'Flutter iOS + Android', sub: 'Published apps' },
+              { icon: Globe, label: 'Full-Stack Web', sub: 'React · Node · TS' },
+              { icon: Brain, label: 'AI Engineering', sub: 'LLMs · RAG · Agents' },
+              { icon: Bot, label: 'Prompt Engineering', sub: 'Designed for production' },
+            ].map((item, i) => (
               <motion.div
-                key={project.id}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
+                key={item.label}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08, ease: EASE }}
+                className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/10"
               >
-                <ProjectCard project={project} index={index} />
+                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/15 to-blue-500/15 border border-cyan-400/20 flex items-center justify-center shrink-0">
+                  <item.icon className="w-4.5 h-4.5 text-cyan-300" />
+                </div>
+                <div>
+                  <div className="text-white text-sm font-medium leading-tight">
+                    {item.label}
+                  </div>
+                  <div className="text-white/45 text-[11.5px] mt-0.5">{item.sub}</div>
+                </div>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <Card key={isProfessional ? 'prof-cta' : 'pers-cta'}>
-            <h2 className="text-3xl font-bold text-white mb-6">
-              {isProfessional
-                ? "Let's Build Something Amazing Together"
-                : "Let's Connect and Create Meaningful Bonds"
-              }
-            </h2>
-            <p className="text-white/80 text-lg mb-8">
-              {isProfessional
-                ? "Have a project in mind? I'd love to hear about it and explore how we can bring your vision to life with cutting-edge technology and thoughtful design."
-                : "Looking to build genuine connections across cultures? I'd love to connect with you and share experiences, learn languages together, or simply have meaningful conversations."
-              }
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg">
-                {isProfessional ? 'Start a Project' : 'Connect With Me'}
-              </Button>
-              <Button variant="outline" size="lg">
-                {isProfessional ? 'View More Work' : 'Learn More About Me'}
-              </Button>
+      {/* CTA */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/5">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease: EASE }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs font-medium tracking-wide mb-6">
+              <Cpu className="w-3.5 h-3.5" />
+              <span>Available for new work</span>
             </div>
-          </Card>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 text-balance">
+              Have a product to ship?
+            </h2>
+            <p className="text-white/55 text-base sm:text-lg mb-8 leading-relaxed">
+              I build complete digital products — mobile, web, AI — from architecture to publication. Let's talk about yours.
+            </p>
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-2 px-7 py-3.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-semibold rounded-xl shadow-lg shadow-cyan-500/20 transition-all duration-200"
+            >
+              <span>Start a project</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </div>
       </section>
     </PageWrapper>

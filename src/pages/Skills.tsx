@@ -1,499 +1,624 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Code, Database, Smartphone, Cpu, Globe, Palette, Languages, Heart, Users, Brain, Lightbulb, MessageCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Code2,
+  Database,
+  Smartphone,
+  Cpu,
+  Globe,
+  Brain,
+  Languages,
+  Terminal,
+  Sparkles,
+  Layers,
+  GitBranch,
+  Rocket,
+  CircuitBoard,
+} from 'lucide-react';
 import PageWrapper from '../components/PageWrapper';
-import Card from '../components/Card';
-import { useTheme } from '../context/ThemeContext';
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
+
+type SkillCategory =
+  | 'all'
+  | 'ai'
+  | 'mobile'
+  | 'frontend'
+  | 'backend'
+  | 'iot'
+  | 'devops'
+  | 'languages';
+
+interface Skill {
+  name: string;
+  category: Exclude<SkillCategory, 'all'>;
+  level: number;
+  years: string;
+  color: string;
+  description: string;
+  tags: string[];
+}
 
 const Skills: React.FC = () => {
-  const { isProfessional } = useTheme();
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState<SkillCategory>('all');
 
-  const professionalCategories = [
-    { id: 'all', name: 'All Skills', icon: Code },
+  const categories: { id: SkillCategory; name: string; icon: typeof Code2 }[] = [
+    { id: 'all', name: 'All', icon: Layers },
+    { id: 'ai', name: 'AI & Prompt Engineering', icon: Brain },
+    { id: 'mobile', name: 'Mobile · Flutter', icon: Smartphone },
     { id: 'frontend', name: 'Frontend', icon: Globe },
-    { id: 'backend', name: 'Backend', icon: Database },
-    { id: 'automation', name: 'Automation', icon: Cpu },
-    { id: 'ai', name: 'AI/ML', icon: Brain },
+    { id: 'backend', name: 'Backend & Data', icon: Database },
+    { id: 'iot', name: 'IoT & Embedded', icon: CircuitBoard },
+    { id: 'devops', name: 'DevOps & Tooling', icon: Cpu },
     { id: 'languages', name: 'Languages', icon: Languages },
   ];
 
-  const personalCategories = [
-    { id: 'all', name: 'All Strengths', icon: Heart },
-    { id: 'languages', name: 'Languages', icon: Languages },
-    { id: 'emotional', name: 'Emotional', icon: Heart },
-    { id: 'social', name: 'Social', icon: Users },
-    { id: 'cognitive', name: 'Cognitive', icon: Brain },
-  ];
+  const skills: Skill[] = [
+    // AI & Prompt Engineering
+    {
+      name: 'Prompt Engineering',
+      category: 'ai',
+      level: 94,
+      years: '2+ yrs',
+      color: 'from-cyan-400 to-blue-500',
+      description:
+        'Structured system prompts, chain-of-thought, few-shot design, evaluation loops, and guardrails for production LLM apps.',
+      tags: ['System Prompts', 'Few-Shot', 'Evals', 'Guardrails'],
+    },
+    {
+      name: 'LLM Integration · OpenAI · Claude · Gemini',
+      category: 'ai',
+      level: 92,
+      years: '2+ yrs',
+      color: 'from-violet-400 to-fuchsia-500',
+      description:
+        'End-to-end integration of frontier LLMs with streaming, function calling, tool use, and cost-optimized routing.',
+      tags: ['OpenAI', 'Claude API', 'Gemini', 'Tool Use'],
+    },
+    {
+      name: 'RAG & Vector Search',
+      category: 'ai',
+      level: 88,
+      years: '1.5 yrs',
+      color: 'from-purple-400 to-indigo-500',
+      description:
+        'Retrieval-augmented pipelines with chunking strategies, embeddings, hybrid search, and reranking.',
+      tags: ['Pinecone', 'pgvector', 'Embeddings', 'Hybrid Search'],
+    },
+    {
+      name: 'LangChain & Agent Orchestration',
+      category: 'ai',
+      level: 86,
+      years: '1.5 yrs',
+      color: 'from-emerald-400 to-teal-500',
+      description:
+        'Multi-step agents, tool routing, memory, and stateful workflows for autonomous task execution.',
+      tags: ['LangChain', 'Agents', 'Tools', 'Memory'],
+    },
+    {
+      name: 'AI Product Engineering',
+      category: 'ai',
+      level: 90,
+      years: '2 yrs',
+      color: 'from-sky-400 to-cyan-500',
+      description:
+        'Designing AI features that ship — from data collection to eval harnesses to user-facing UX patterns.',
+      tags: ['Evals', 'UX Patterns', 'Observability'],
+    },
 
-  const skillCategories = isProfessional ? professionalCategories : personalCategories;
+    // Mobile
+    {
+      name: 'Flutter & Dart',
+      category: 'mobile',
+      level: 94,
+      years: '3+ yrs',
+      color: 'from-cyan-400 to-blue-500',
+      description:
+        'Production cross-platform apps published to the App Store and Google Play. State management, native channels, release automation.',
+      tags: ['iOS', 'Android', 'Riverpod', 'Native Bridges'],
+    },
+    {
+      name: 'iOS Publishing · App Store Connect',
+      category: 'mobile',
+      level: 88,
+      years: '2 yrs',
+      color: 'from-slate-400 to-slate-600',
+      description:
+        'End-to-end pipeline: signing, TestFlight, review, and phased rollouts on the Apple App Store.',
+      tags: ['Xcode', 'TestFlight', 'Signing'],
+    },
+    {
+      name: 'Android Publishing · Play Console',
+      category: 'mobile',
+      level: 90,
+      years: '2 yrs',
+      color: 'from-emerald-400 to-green-500',
+      description:
+        'Release tracks, signing keys, Play Console compliance, and staged rollouts with crash analytics.',
+      tags: ['Play Console', 'Signing', 'Rollouts'],
+    },
+    {
+      name: 'Firebase · Auth · Firestore · Functions',
+      category: 'mobile',
+      level: 91,
+      years: '3 yrs',
+      color: 'from-orange-400 to-amber-500',
+      description:
+        'Realtime data, auth, cloud functions, FCM, crashlytics — the backbone of shipped mobile products.',
+      tags: ['Firestore', 'FCM', 'Crashlytics'],
+    },
 
-  const professionalSkills = [
+    // Frontend
     {
       name: 'React & TypeScript',
       category: 'frontend',
       level: 95,
-      color: 'from-blue-400 to-blue-600',
-      description: 'Advanced component architecture, hooks, state management, and type-safe development',
+      years: '3+ yrs',
+      color: 'from-blue-400 to-cyan-500',
+      description:
+        'Type-safe component systems, hooks, advanced state, performance profiling, and composable architecture.',
+      tags: ['Hooks', 'TS Generics', 'Perf'],
     },
     {
-      name: 'Python Automation',
-      category: 'automation',
-      level: 92,
-      color: 'from-green-400 to-green-600',
-      description: 'Workflow automation, web scraping, data processing with Selenium and Pandas',
+      name: 'Next.js & Vite',
+      category: 'frontend',
+      level: 90,
+      years: '3 yrs',
+      color: 'from-slate-300 to-slate-500',
+      description:
+        'SSR, RSC, edge runtimes, and lightning-fast Vite builds for production-grade web apps.',
+      tags: ['SSR', 'RSC', 'Edge'],
     },
+    {
+      name: 'Tailwind · Framer Motion',
+      category: 'frontend',
+      level: 93,
+      years: '3 yrs',
+      color: 'from-teal-400 to-cyan-500',
+      description:
+        'Design-system thinking, micro-interactions, motion choreography, and accessible UI at speed.',
+      tags: ['Design Systems', 'Motion', 'A11y'],
+    },
+    {
+      name: 'Three.js / WebGL',
+      category: 'frontend',
+      level: 78,
+      years: '2 yrs',
+      color: 'from-rose-400 to-pink-500',
+      description:
+        'Interactive 3D experiences, shader basics, and performant WebGL visualizations.',
+      tags: ['WebGL', 'Shaders', 'R3F'],
+    },
+
+    // Backend
     {
       name: 'Node.js & Express',
       category: 'backend',
+      level: 91,
+      years: '3 yrs',
+      color: 'from-emerald-400 to-green-600',
+      description:
+        'REST + realtime APIs, auth, caching, and well-structured services that scale with the product.',
+      tags: ['REST', 'WebSockets', 'Auth'],
+    },
+    {
+      name: 'Python · FastAPI · Flask',
+      category: 'backend',
       level: 90,
-      color: 'from-green-500 to-green-700',
-      description: 'RESTful APIs, microservices, and scalable backend architecture',
+      years: '3 yrs',
+      color: 'from-teal-400 to-emerald-500',
+      description:
+        'Async-first APIs, background workers, ML serving, and automation pipelines.',
+      tags: ['FastAPI', 'Async', 'Workers'],
     },
     {
-      name: 'AI & Machine Learning',
-      category: 'ai',
-      level: 85,
-      color: 'from-purple-400 to-purple-600',
-      description: 'TensorFlow, OpenAI integration, and intelligent automation tools',
-    },
-    {
-      name: 'MongoDB & PostgreSQL',
+      name: 'PostgreSQL & MongoDB',
       category: 'backend',
       level: 88,
-      color: 'from-emerald-400 to-emerald-600',
-      description: 'Database design, optimization, and data modeling',
+      years: '3 yrs',
+      color: 'from-indigo-400 to-blue-600',
+      description:
+        'Schema design, indexing, query tuning, and choosing the right store for the workload.',
+      tags: ['pgvector', 'Indexes', 'Modeling'],
     },
     {
-      name: 'FastAPI & Flask',
+      name: 'Automation · Selenium · Pandas',
       category: 'backend',
-      level: 87,
-      color: 'from-teal-400 to-teal-600',
-      description: 'High-performance Python APIs with async support',
+      level: 89,
+      years: '3 yrs',
+      color: 'from-yellow-400 to-amber-500',
+      description:
+        'Operational automation, scraping, ETL, and business-critical Python scripts that save hours.',
+      tags: ['Selenium', 'Pandas', 'ETL'],
+    },
+
+    // IoT & Embedded
+    {
+      name: 'Raspberry Pi · Edge Computing',
+      category: 'iot',
+      level: 88,
+      years: '3 yrs',
+      color: 'from-rose-400 to-red-500',
+      description:
+        'Linux-based edge devices running Python services, camera pipelines, GPIO control, and headless deployments for real-world IoT products.',
+      tags: ['Linux', 'Python', 'GPIO', 'Edge AI'],
     },
     {
-      name: 'Malayalam',
-      category: 'languages',
-      level: 100,
-      color: 'from-emerald-400 to-emerald-600',
-      description: 'Native language from Kerala, Thrissur with complete fluency',
+      name: 'Arduino Uno · Microcontrollers',
+      category: 'iot',
+      level: 85,
+      years: '3 yrs',
+      color: 'from-teal-400 to-cyan-500',
+      description:
+        'Embedded C/C++ firmware, sensor networks, motor control, and hardware prototyping for practical automation projects.',
+      tags: ['C/C++', 'Sensors', 'Actuators', 'Serial'],
     },
     {
-      name: 'English',
-      category: 'languages',
-      level: 98,
-      color: 'from-blue-400 to-blue-600',
-      description: 'Fluent, almost native-level proficiency in speaking, writing, and professional communication',
+      name: 'ESP32 · Wi-Fi IoT',
+      category: 'iot',
+      level: 82,
+      years: '2 yrs',
+      color: 'from-indigo-400 to-violet-500',
+      description:
+        'Connected devices with Wi-Fi, Bluetooth, MQTT telemetry, and OTA updates — bridging hardware to cloud backends.',
+      tags: ['MQTT', 'Wi-Fi', 'BLE', 'OTA'],
     },
     {
-      name: 'Hindi',
-      category: 'languages',
-      level: 60,
-      color: 'from-orange-400 to-orange-600',
-      description: 'Good conversational proficiency for connecting across North India',
+      name: 'Hardware Prototyping & Integration',
+      category: 'iot',
+      level: 84,
+      years: '3 yrs',
+      color: 'from-amber-400 to-orange-500',
+      description:
+        'From breadboard to enclosure — sensor integration, I²C/SPI/UART protocols, 3D-printed housings, and field-ready deployments.',
+      tags: ['I²C', 'SPI', 'UART', 'Prototyping'],
     },
-    {
-      name: 'Tamil',
-      category: 'languages',
-      level: 60,
-      color: 'from-yellow-400 to-yellow-600',
-      description: 'Conversational proficiency with cultural understanding',
-    },
-    {
-      name: 'Arabic',
-      category: 'languages',
-      level: 35,
-      color: 'from-green-400 to-green-600',
-      description: 'Currently learning, building foundation in this beautiful language',
-    },
-    {
-      name: 'Spanish',
-      category: 'languages',
-      level: 30,
-      color: 'from-red-400 to-red-600',
-      description: 'Currently learning, exploring Hispanic language and culture',
-    },
+
+    // DevOps
     {
       name: 'Docker & CI/CD',
-      category: 'automation',
-      level: 82,
-      color: 'from-cyan-400 to-cyan-600',
-      description: 'Containerization, deployment automation, and DevOps practices',
+      category: 'devops',
+      level: 86,
+      years: '2+ yrs',
+      color: 'from-sky-400 to-blue-500',
+      description:
+        'Containerized apps, GitHub Actions pipelines, and repeatable deployments across environments.',
+      tags: ['Docker', 'Actions', 'Pipelines'],
     },
     {
-      name: 'Git & GitHub',
-      category: 'automation',
-      level: 93,
-      color: 'from-gray-400 to-gray-600',
-      description: 'Version control, collaboration workflows, and CI/CD integration',
-    },
-  ];
-
-  const personalSkills = [
-    {
-      name: 'Malayalam',
-      category: 'languages',
-      level: 100,
-      color: 'from-emerald-400 to-emerald-600',
-      description: 'Native speaker from Kerala with deep cultural roots and linguistic mastery',
+      name: 'Git & GitHub Workflow',
+      category: 'devops',
+      level: 96,
+      years: '4 yrs',
+      color: 'from-slate-400 to-gray-500',
+      description:
+        'Branching strategies, code review culture, conventional commits, and release engineering.',
+      tags: ['Reviews', 'Releases', 'Strategy'],
     },
     {
-      name: 'English',
-      category: 'languages',
-      level: 98,
-      color: 'from-blue-400 to-blue-600',
-      description: 'Fluent, almost native-level proficiency with nuanced cultural understanding',
-    },
-    {
-      name: 'Hindi',
-      category: 'languages',
-      level: 60,
-      color: 'from-orange-400 to-orange-600',
-      description: 'Comfortable conversational skills for connecting across regions',
-    },
-    {
-      name: 'Tamil',
-      category: 'languages',
-      level: 60,
-      color: 'from-yellow-400 to-yellow-600',
-      description: 'Strong conversational proficiency with cultural appreciation',
-    },
-    {
-      name: 'Arabic',
-      category: 'languages',
-      level: 35,
-      color: 'from-green-400 to-green-600',
-      description: 'Enthusiastic learner building foundation in this beautiful language',
-    },
-    {
-      name: 'Spanish',
-      category: 'languages',
-      level: 30,
-      color: 'from-red-400 to-red-600',
-      description: 'Passionate beginner exploring Hispanic language and culture',
-    },
-    {
-      name: 'Trusted Listener & Problem Solver',
-      category: 'emotional',
-      level: 98,
-      color: 'from-purple-400 to-purple-600',
-      description: 'Friends rely on me as their go-to person for listening and providing thoughtful suggestions to solve their problems',
-    },
-    {
-      name: 'Leadership & Presence',
-      category: 'social',
-      level: 95,
-      color: 'from-indigo-400 to-indigo-600',
-      description: 'Natural leadership qualities with a commanding yet approachable aura that inspires others',
-    },
-    {
-      name: 'Safe Space Creator',
-      category: 'emotional',
-      level: 97,
-      color: 'from-pink-400 to-pink-600',
-      description: 'Exceptional ability to create safe, judgment-free environments where people feel comfortable sharing anything',
-    },
-    {
-      name: 'Emotional Intelligence',
-      category: 'emotional',
-      level: 93,
-      color: 'from-rose-400 to-rose-600',
-      description: 'Deep awareness and management of emotions, both my own and others',
-    },
-    {
-      name: 'Cultural Sensitivity',
-      category: 'social',
-      level: 92,
-      color: 'from-purple-400 to-purple-600',
-      description: 'Deep respect and understanding of diverse cultural perspectives',
-    },
-    {
-      name: 'Interpersonal Connection',
-      category: 'social',
-      level: 90,
-      color: 'from-amber-400 to-amber-600',
-      description: 'Building genuine, meaningful relationships across all backgrounds',
-    },
-    {
-      name: 'Intuitive Understanding',
-      category: 'cognitive',
+      name: 'Cloud · Firebase · Vercel · Netlify',
+      category: 'devops',
       level: 88,
-      color: 'from-cyan-400 to-cyan-600',
-      description: 'Reading between the lines and understanding unspoken needs',
+      years: '3 yrs',
+      color: 'from-orange-400 to-red-500',
+      description:
+        'Production deployments, edge functions, custom domains, and monitoring across providers.',
+      tags: ['Edge', 'CDN', 'DNS'],
     },
-    {
-      name: 'Adaptability',
-      category: 'cognitive',
-      level: 90,
-      color: 'from-teal-400 to-teal-600',
-      description: 'Seamlessly adjusting communication style to different contexts',
-    },
-    {
-      name: 'Patience & Understanding',
-      category: 'emotional',
-      level: 94,
-      color: 'from-emerald-400 to-emerald-600',
-      description: 'Giving people space and time to express themselves fully',
-    },
+
+    // Languages
+    { name: 'English', category: 'languages', level: 98, years: 'Fluent', color: 'from-blue-400 to-cyan-500', description: 'Professional working proficiency — technical writing, client communication, documentation.', tags: ['Business', 'Technical'] },
+    { name: 'Malayalam', category: 'languages', level: 100, years: 'Native', color: 'from-emerald-400 to-teal-500', description: 'Native speaker — Kerala, Thrissur origin.', tags: ['Native'] },
+    { name: 'Hindi', category: 'languages', level: 70, years: 'Conversational', color: 'from-orange-400 to-amber-500', description: 'Comfortable in professional and daily conversation.', tags: ['Conversational'] },
+    { name: 'Tamil', category: 'languages', level: 65, years: 'Conversational', color: 'from-yellow-400 to-orange-500', description: 'Conversational fluency.', tags: ['Conversational'] },
+    { name: 'Arabic', category: 'languages', level: 40, years: 'Learning', color: 'from-green-400 to-emerald-500', description: 'Actively learning — UAE-based and growing daily.', tags: ['Foundational'] },
   ];
 
-  const skills = isProfessional ? professionalSkills : personalSkills;
+  const filteredSkills =
+    activeCategory === 'all'
+      ? skills
+      : skills.filter((s) => s.category === activeCategory);
 
-  const filteredSkills = activeCategory === 'all'
-    ? skills
-    : skills.filter(skill => skill.category === activeCategory);
+  const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    show: (i: number = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, delay: i * 0.04, ease: EASE },
+    }),
+  };
 
-  const SkillCard: React.FC<{ skill: any; index: number }> = ({ skill, index }) => (
-    <Card delay={index * 0.1} className="group">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xl font-semibold text-white">{skill.name}</h3>
-        <span className="text-accent-400 font-bold">{skill.level}%</span>
-      </div>
-      
-      <div className="w-full bg-white/10 rounded-full h-2 mb-4 overflow-hidden">
-        <motion.div
-          className={`h-2 bg-gradient-to-r ${skill.color} rounded-full relative`}
-          initial={{ width: 0 }}
-          whileInView={{ width: `${skill.level}%` }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.2, delay: index * 0.1, ease: "easeOut" }}
-        >
-          <motion.div
-            className="absolute inset-0 bg-white/30"
-            initial={{ x: '-100%' }}
-            animate={{ x: '200%' }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              ease: "linear",
-              delay: index * 0.1 + 1.2
-            }}
-          />
-        </motion.div>
-      </div>
-      
-      <p className="text-white/70 text-sm">{skill.description}</p>
-    </Card>
-  );
+  const toolkit = [
+    { label: 'OpenAI', group: 'ai' },
+    { label: 'Claude API', group: 'ai' },
+    { label: 'Gemini', group: 'ai' },
+    { label: 'LangChain', group: 'ai' },
+    { label: 'pgvector', group: 'ai' },
+    { label: 'Flutter', group: 'mobile' },
+    { label: 'Dart', group: 'mobile' },
+    { label: 'React', group: 'frontend' },
+    { label: 'TypeScript', group: 'frontend' },
+    { label: 'Next.js', group: 'frontend' },
+    { label: 'Tailwind', group: 'frontend' },
+    { label: 'Framer Motion', group: 'frontend' },
+    { label: 'Node.js', group: 'backend' },
+    { label: 'Python', group: 'backend' },
+    { label: 'FastAPI', group: 'backend' },
+    { label: 'PostgreSQL', group: 'backend' },
+    { label: 'MongoDB', group: 'backend' },
+    { label: 'Firebase', group: 'backend' },
+    { label: 'Raspberry Pi', group: 'iot' },
+    { label: 'Arduino', group: 'iot' },
+    { label: 'ESP32', group: 'iot' },
+    { label: 'MQTT', group: 'iot' },
+    { label: 'Docker', group: 'devops' },
+    { label: 'GitHub Actions', group: 'devops' },
+    { label: 'Vercel', group: 'devops' },
+  ];
 
   return (
     <PageWrapper>
-      {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      {/* ambient glow */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <motion.div
+          animate={{ x: [0, 40, 0], y: [0, -20, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute top-1/4 -left-40 w-[30rem] h-[30rem] rounded-full bg-cyan-500/10 blur-3xl"
+        />
+        <motion.div
+          animate={{ x: [0, -30, 0], y: [0, 30, 0] }}
+          transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute bottom-0 right-0 w-[28rem] h-[28rem] rounded-full bg-blue-500/10 blur-3xl"
+        />
+      </div>
+
+      {/* Hero */}
+      <section className="pt-24 pb-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto text-center">
           <motion.div
-            key={isProfessional ? 'prof-header' : 'pers-header'}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/20 text-cyan-300 text-xs font-medium tracking-wide mb-6"
           >
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-              {isProfessional ? 'Technical ' : 'Personal '}
-              <span className={`bg-gradient-to-r ${isProfessional ? 'from-accent-400 to-emerald-400' : 'from-pink-400 to-rose-400'} bg-clip-text text-transparent`}>
-                {isProfessional ? 'Expertise' : 'Strengths'}
-              </span>
-            </h1>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto mb-8">
-              {isProfessional
-                ? 'A comprehensive overview of my technical skills, tools, and technologies I use to build innovative solutions'
-                : 'My unique abilities in connecting with people, learning languages, and understanding emotions deeply'
-              }
-            </p>
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Technical Expertise · 2026</span>
           </motion.div>
+
+          <motion.h1
+            custom={1}
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 text-balance"
+          >
+            Skills that{' '}
+            <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              ship products
+            </span>
+          </motion.h1>
+
+          <motion.p
+            custom={2}
+            initial="hidden"
+            animate="show"
+            variants={fadeUp}
+            className="text-base sm:text-lg text-white/55 max-w-2xl mx-auto leading-relaxed"
+          >
+            A production-grade stack spanning AI & prompt engineering, Flutter mobile, modern web, backend services, and IoT — shipping real products, not just demos.
+          </motion.p>
         </div>
       </section>
 
       {/* Category Filters */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8">
+      <section className="px-4 sm:px-6 lg:px-8 pb-8">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {skillCategories.map((category) => (
-              <motion.button
-                key={category.id}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveCategory(category.id)}
-                className={`flex items-center space-x-2 px-6 py-3 rounded-full transition-all duration-300 ${
-                  activeCategory === category.id
-                    ? 'bg-gradient-to-r from-accent-500 to-accent-600 text-white shadow-lg'
-                    : 'bg-white/10 text-white/80 hover:bg-white/20'
-                }`}
-              >
-                <category.icon className="w-5 h-5" />
-                <span>{category.name}</span>
-              </motion.button>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15, ease: EASE }}
+            className="flex flex-wrap justify-center gap-2.5"
+          >
+            {categories.map((category) => {
+              const active = activeCategory === category.id;
+              return (
+                <motion.button
+                  key={category.id}
+                  type="button"
+                  whileHover={{ y: -1 }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 ${
+                    active
+                      ? 'text-white'
+                      : 'text-white/55 hover:text-white border border-white/10 hover:border-white/20 bg-white/[0.03]'
+                  }`}
+                >
+                  {active && (
+                    <motion.span
+                      layoutId="skills-active-pill"
+                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 shadow-lg shadow-cyan-500/20"
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  <category.icon className="w-4 h-4 relative z-10" />
+                  <span className="relative z-10">{category.name}</span>
+                </motion.button>
+              );
+            })}
+          </motion.div>
         </div>
       </section>
 
       {/* Skills Grid */}
-      <section className="py-8 px-4 sm:px-6 lg:px-8">
+      <section className="px-4 sm:px-6 lg:px-8 pb-16">
         <div className="max-w-6xl mx-auto">
-          <motion.div
-            layout
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {filteredSkills.map((skill, index) => (
-              <motion.div
-                key={skill.name}
-                layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
-              >
-                <SkillCard skill={skill} index={index} />
-              </motion.div>
-            ))}
+          <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <AnimatePresence mode="popLayout">
+              {filteredSkills.map((skill, index) => (
+                <motion.div
+                  key={skill.name}
+                  layout
+                  initial={{ opacity: 0, y: 20, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.97 }}
+                  transition={{ duration: 0.45, delay: index * 0.04, ease: EASE }}
+                  className="group relative p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/30 transition-colors duration-300 overflow-hidden"
+                >
+                  <div
+                    className={`absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 bg-gradient-to-br ${skill.color} pointer-events-none`}
+                  />
+
+                  <div className="flex items-start justify-between mb-4 relative">
+                    <div>
+                      <h3 className="text-base font-semibold text-white leading-tight">
+                        {skill.name}
+                      </h3>
+                      <p className="text-white/40 text-xs mt-1">{skill.years}</p>
+                    </div>
+                    <span className="text-cyan-300 font-semibold text-sm tabular-nums">
+                      {skill.level}%
+                    </span>
+                  </div>
+
+                  <div className="w-full bg-white/[0.06] rounded-full h-1.5 mb-4 overflow-hidden relative">
+                    <motion.div
+                      className={`h-1.5 bg-gradient-to-r ${skill.color} rounded-full`}
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${skill.level}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.1, delay: index * 0.05, ease: EASE }}
+                    />
+                  </div>
+
+                  <p className="text-white/50 text-sm leading-relaxed mb-4">
+                    {skill.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5">
+                    {skill.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-0.5 rounded-md text-[10.5px] font-medium bg-white/[0.04] border border-white/10 text-white/55"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </motion.div>
         </div>
       </section>
 
-      {/* Learning Journey */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+      {/* Toolkit ribbon */}
+      <section className="px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="max-w-6xl mx-auto">
           <motion.div
-            key={isProfessional ? 'prof-learning' : 'pers-learning'}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease: EASE }}
+            className="p-8 rounded-3xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/10"
+          >
+            <div className="flex items-center gap-2 mb-5 text-white/60 text-xs uppercase tracking-[0.18em]">
+              <Terminal className="w-4 h-4 text-cyan-400" />
+              <span>Daily Toolkit</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {toolkit.map((item, i) => (
+                <motion.span
+                  key={item.label}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.025, ease: EASE }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] border border-white/10 text-white/70 hover:text-white hover:border-cyan-400/30 transition-colors cursor-default"
+                >
+                  {item.label}
+                </motion.span>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Current Focus + Next Goals */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.6, ease: EASE }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-              {isProfessional ? 'Continuous Learning' : 'Growing & Evolving'}
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+              Building forward
             </h2>
-            <p className="text-white/70 text-lg">
-              {isProfessional
-                ? 'My commitment to staying current with emerging technologies'
-                : 'My journey of personal growth and expanding connections'
-              }
+            <p className="text-white/50">
+              Where I'm investing my learning in 2026
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {isProfessional ? (
-              <>
-                <Card>
-                  <Code className="w-12 h-12 text-accent-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">Current Focus</h3>
-                  <ul className="space-y-2 text-white/70">
-                    <li>• Advanced AI Integration</li>
-                    <li>• Cloud-Native Architecture</li>
-                    <li>• Real-time Web Applications</li>
-                    <li>• Advanced Python Automation</li>
-                  </ul>
-                </Card>
+          <div className="grid md:grid-cols-2 gap-5">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-400/30 transition-colors duration-300"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/15 to-blue-500/15 border border-cyan-400/20 flex items-center justify-center mb-4">
+                <Rocket className="w-5 h-5 text-cyan-300" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                Actively Deepening
+              </h3>
+              <ul className="space-y-2.5 text-white/60 text-sm">
+                {[
+                  'Agentic workflows & multi-tool reasoning',
+                  'Evaluation harnesses for LLM products',
+                  'Flutter 3.x advanced state architecture',
+                  'Edge AI on Raspberry Pi & ESP32',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5">
+                    <span className="mt-1.5 w-1.5 h-1.5 bg-cyan-400 rounded-full shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
 
-                <Card>
-                  <Cpu className="w-12 h-12 text-emerald-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">Next Goals</h3>
-                  <ul className="space-y-2 text-white/70">
-                    <li>• Rust Programming</li>
-                    <li>• Kubernetes & DevOps</li>
-                    <li>• Advanced ML Models</li>
-                    <li>• Distributed Systems</li>
-                  </ul>
-                </Card>
-              </>
-            ) : (
-              <>
-                <Card>
-                  <Languages className="w-12 h-12 text-pink-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">Language Goals</h3>
-                  <ul className="space-y-2 text-white/70">
-                    <li>• Master Japanese</li>
-                    <li>• Improve French fluency</li>
-                    <li>• Learn Mandarin Chinese</li>
-                    <li>• Explore Portuguese</li>
-                  </ul>
-                </Card>
-
-                <Card>
-                  <Heart className="w-12 h-12 text-rose-400 mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-3">Personal Growth</h3>
-                  <ul className="space-y-2 text-white/70">
-                    <li>• Deepen cultural understanding</li>
-                    <li>• Strengthen empathy skills</li>
-                    <li>• Build global connections</li>
-                    <li>• Practice mindful listening</li>
-                  </ul>
-                </Card>
-              </>
-            )}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-80px' }}
+              transition={{ duration: 0.6, delay: 0.08, ease: EASE }}
+              className="p-6 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-blue-400/30 transition-colors duration-300"
+            >
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/15 to-violet-500/15 border border-blue-400/20 flex items-center justify-center mb-4">
+                <GitBranch className="w-5 h-5 text-blue-300" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-3">
+                Next Milestones
+              </h3>
+              <ul className="space-y-2.5 text-white/60 text-sm">
+                {[
+                  'Rust for high-performance backend services',
+                  'Kubernetes & production observability',
+                  'Fine-tuning & domain-specific LLMs',
+                  'Distributed systems design patterns',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2.5">
+                    <span className="mt-1.5 w-1.5 h-1.5 bg-blue-400 rounded-full shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           </div>
-        </div>
-      </section>
-
-      {/* Philosophy */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <Card className="text-center" key={isProfessional ? 'prof-phil' : 'pers-phil'}>
-            <h2 className="text-3xl font-bold text-white mb-6">
-              {isProfessional ? 'My Technology Philosophy' : 'My Connection Philosophy'}
-            </h2>
-            {isProfessional ? (
-              <div className="grid md:grid-cols-3 gap-8 text-center">
-                <div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-accent-400 to-accent-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Code className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Clean Code</h3>
-                  <p className="text-white/70 text-sm">
-                    Writing maintainable, readable code that tells a story
-                  </p>
-                </div>
-                <div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Globe className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">User-Centric</h3>
-                  <p className="text-white/70 text-sm">
-                    Always considering the end user's experience and needs
-                  </p>
-                </div>
-                <div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Brain className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Innovation</h3>
-                  <p className="text-white/70 text-sm">
-                    Embracing new technologies to solve complex problems
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="grid md:grid-cols-3 gap-8 text-center">
-                <div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-pink-400 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Heart className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Genuine Empathy</h3>
-                  <p className="text-white/70 text-sm">
-                    Understanding feelings deeply and responding with authenticity
-                  </p>
-                </div>
-                <div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-rose-400 to-rose-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Users className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Bridge Building</h3>
-                  <p className="text-white/70 text-sm">
-                    Connecting people across cultures and languages
-                  </p>
-                </div>
-                <div>
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Lightbulb className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Deep Understanding</h3>
-                  <p className="text-white/70 text-sm">
-                    Reading beyond words to grasp true meaning and intent
-                  </p>
-                </div>
-              </div>
-            )}
-          </Card>
         </div>
       </section>
     </PageWrapper>

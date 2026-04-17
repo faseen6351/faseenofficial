@@ -1,4 +1,4 @@
-// Using fetch instead of axios for API calls
+import axios from 'axios';
 
 interface Message {
   id: string;
@@ -33,6 +33,8 @@ interface ChatResponse {
 }
 
 class ChatbotService {
+  private readonly apiKey = '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';
+  private readonly baseUrl = 'https://openrouter.ai/api/v1/chat/completions';
   
   // Knowledge base for instant responses
   private knowledgeBase = {
@@ -169,33 +171,6 @@ class ChatbotService {
     return nameMatch ? nameMatch[2] : null;
   }
 
-  // Call backend API for chatbot responses
-  private async callBackendAPI(message: string, conversationHistory: Message[], session: ChatSession): Promise<string> {
-    try {
-      const response = await fetch('/api/chatbot', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          conversationHistory,
-          session
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      return result.response || result.message || "I'm having trouble responding right now. Please try again!";
-    } catch (error) {
-      console.error('Backend API call failed:', error);
-      throw error;
-    }
-  }
-
   // Generate local response for common queries
   private generateLocalResponse(intent: string, message: string, session: ChatSession): string | null {
     const visitorName = session.visitorName ? `, ${session.visitorName}` : '';
@@ -217,7 +192,7 @@ class ChatbotService {
         return `Mohamed is currently at Absons IT Solutions but is open to discussing interesting consulting opportunities${visitorName}. He values meaningful projects and collaborative relationships. What type of project are you considering?`;
       
       case 'contact':
-        return `You can reach Mohamed at faseenofficial@gmail.com${visitorName}. He typically responds within 24 hours and is based in Abu Dhabi, UAE (UTC+4). You can also call him at +971 50 983 8149. Would you like me to help you prepare your message or learn more about his work first?`;
+        return `You can reach Mohamed at faseenofficial@gmail.com${visitorName}. He typically responds within 24 hours and is based in Sri Lanka (UTC+5:30). Would you like me to help you prepare your message or learn more about his work first?`;
       
       default:
         return null;
@@ -262,7 +237,40 @@ Your role is to:
 Respond as Mohamed's knowledgeable assistant who genuinely cares about helping visitors find what they need. Be conversational and ask follow-up questions to better understand their needs.`;
   }
 
-  // Removed OpenRouter API call - now using backend API
+  // Call OpenRouter API
+  private async callOpenRouterAPI(prompt: string, systemPrompt: string): Promise<string> {
+    try {
+      const response = await axios.post(
+        this.baseUrl,
+        {
+          model: 'qwen/qwen-2.5-32b-instruct:free',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ],
+          max_tokens: 300,
+          temperature: 0.7,
+          top_p: 0.9,
+          frequency_penalty: 0.1,
+          presence_penalty: 0.1
+        },
+        {
+          headers: {
+            'Authorization': `Bearer ${this.apiKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': window.location.origin,
+            'X-Title': 'Mohamed Fasin Portfolio'
+          }
+        }
+      );
+
+      return response.data.choices[0]?.message?.content || 
+        "I'm having trouble processing that right now. Could you try rephrasing your question?";
+    } catch (error) {
+      console.error('OpenRouter API error:', error);
+      throw new Error('Failed to get AI response');
+    }
+  }
 
   // Main method to get chatbot response
   async getResponse(request: ChatRequest): Promise<ChatResponse> {
@@ -292,9 +300,10 @@ Respond as Mohamed's knowledgeable assistant who genuinely cares about helping v
       };
     }
 
-    // Use backend API for complex queries
+    // Use OpenRouter API for complex queries
     try {
-      const aiResponse = await this.callBackendAPI(message, request.conversationHistory, updatedSession);
+      const systemPrompt = this.createSystemPrompt(updatedSession);
+      const aiResponse = await this.callOpenRouterAPI(message, systemPrompt);
       
       return {
         message: aiResponse,

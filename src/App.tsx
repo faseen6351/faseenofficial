@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { AnimatePresence } from 'framer-motion';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -10,24 +9,12 @@ import Projects from './pages/Projects';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
 import Footer from './components/Footer';
-import FloatingElements from './components/FloatingElements';
 import Chatbot from './components/Chatbot';
 
 function App() {
   return (
-    <ThemeProvider>
-      <AppContent />
-    </ThemeProvider>
-  );
-}
-
-function AppContent() {
-  const { colors } = useTheme();
-
-  return (
     <Router>
-      <div className={`min-h-screen bg-gradient-to-br ${colors.primary} relative overflow-hidden flex flex-col transition-all duration-700`}>
-        <FloatingElements />
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 relative overflow-hidden flex flex-col">
         <Navigation />
         <main className="flex-grow">
           <AnimatePresence mode="wait">
